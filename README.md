@@ -3,6 +3,12 @@
 # Run Project
 
 ```
+# build project
 mvn clean install
-mvn exec:java -Dexec.mainClass="tehpeng.simulator.main.SimulatorApplication"
+
+# run test
+mvn clean test
+
+# run project
+mvn exec:java -Dexec.mainClass="tehpeng.simulator.SimulatorApplication"
 ```
