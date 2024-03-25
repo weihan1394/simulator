@@ -1,75 +1,228 @@
 package tehpeng.simulator.service;
 
-import tehpeng.simulator.model.old.Coordinate;
+import java.util.*;
+
+import tehpeng.simulator.model.Car;
+import tehpeng.simulator.util.CommonUtil;
+import tehpeng.simulator.util.MapUtil;
 
 public class SimulationService {
-  public void command(char instruction, int x, int y) {
-
+  public void runStartScreen() {
+    System.out.println("Welcome to Auto Driving Car Simulation!");
   }
 
-  private char newDirection(char currentDirection, char direction) {
-    switch (direction) {
-      case 'N':
-        // north
-        if (direction == 'R') {
-          return 'W';
-        } else if (currentDirection == 'L') {
-          return 'E';
-        }
+  public String[] runInputBoundary(Scanner scanner) {
+    String inputBoundary;
+    String[] inputBoundarySplit = null;
+    while (true) {
+      System.out.println("Please enter the width and height of the simulation field in x y format");
+      inputBoundary = scanner.nextLine();
+      inputBoundarySplit = inputBoundary.split(" ");
+
+      if (CommonUtil.isValidBoundarySize(inputBoundarySplit)) {
         break;
-      case 'W':
-        // west
-        if (direction == 'R') {
-          return 'S';
-        } else if (currentDirection == 'L') {
-          return 'N';
-        }
-        break;
-      case 'S':
-        // south
-        if (direction == 'R') {
-          return 'E';
-        } else if (currentDirection == 'L') {
-          return 'W';
-        }
-        break;
-      case 'E':
-        // east
-        if (direction == 'R') {
-          return 'N';
-        } else if (currentDirection == 'L') {
-          return 'S';
-        }
-        break;
-      default:
-        return 'X';
+      }
+
+      // show error before prompt again
+      System.out.println("=ERROR================================================");
+      System.out.println("Please enter a correct dimension of x and y. (integer)");
+      System.out.println("======================================================\n");
     }
 
-    return 'X';
+    return inputBoundarySplit;
   }
 
-  private Coordinate newMove(char direction, Coordinate coordinate) {
-    switch (direction) {
-      case 'N':
-        // north (y + 1)
-        coordinate.forwardNorth();
+  public String runInputOption(Scanner scanner) {
+    String inputOption = "";
+    while (true) {
+      System.out.println("Please choose from the following options: ");
+      System.out.println("[1] Add a car to the field");
+      System.out.println("[2] Run simulation");
+      inputOption = scanner.nextLine();
+
+      if ((CommonUtil.isValidInteger(inputOption))
+          && ((inputOption.trim().equals("1")) || (inputOption.trim().equals("2")))) {
         break;
-      case 'W':
-        // west (x + 1)
-        coordinate.forwardWest();
+      }
+
+      // show error before prompt again
+      System.out.println("=ERROR===============================================");
+      System.out.println("You have entered a wrong option. Selected option: " + inputOption);
+      System.out.println("Please choose a correct option of 1 or 2");
+      System.out.println("=====================================================\n");
+    }
+    return inputOption;
+  }
+
+  public String runInputCarName(Scanner scanner) {
+    String inputCarName = "";
+    while (true) {
+      // add car
+      System.out.println("Please enter the name of the car:");
+      inputCarName = scanner.nextLine();
+      if (CommonUtil.isValidCarName(inputCarName)) {
         break;
-      case 'S':
-        // south (y - 1)
-        coordinate.forwardSouth();
-        break;
-      case 'E':
-        // east (x - 1)
-        coordinate.forwardEast();
-        break;
-      default:
-        return null;
+      }
+
+      System.out.println("=ERROR======================");
+      System.out.println("Please give your car a name.");
+      System.out.println("============================\n");
     }
 
-    return null;
+    return inputCarName;
+  }
+
+  public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY) {
+    String inputCarPosition = "";
+    String[] inputCarPositionSplit = null;
+    while (true) {
+      System.out.println("Please enter initial Position of car A in x y Direction format:");
+      inputCarPosition = scanner.nextLine();
+      inputCarPositionSplit = inputCarPosition.split(" ");
+
+      if (inputCarPositionSplit.length == 3) {
+        // check value options
+        boolean inputFourSplit1StatusInt = CommonUtil.isValidInteger(inputCarPositionSplit[0]);
+        boolean inputFourSplit2StatusInt = CommonUtil.isValidInteger(inputCarPositionSplit[1]);
+        boolean inputFourSplit3StatusDir = CommonUtil.isValidDirection(inputCarPositionSplit[2]);
+
+        if (inputFourSplit1StatusInt && inputFourSplit2StatusInt && inputFourSplit3StatusDir) {
+          // checking for boundary here to make sure can cast to integer
+          boolean inputFourSplit1StatusBoundary = CommonUtil
+              .isValidBoundary(Integer.parseInt(inputCarPositionSplit[0]), inputBoundaryX);
+          boolean inputFourSplit2StatusBoundary = CommonUtil
+              .isValidBoundary(Integer.parseInt(inputCarPositionSplit[1]), inputBoundaryX);
+
+          if (inputFourSplit1StatusBoundary && inputFourSplit2StatusBoundary) {
+            // valid input
+            break;
+          }
+        }
+      }
+
+      // show error before prompt again
+      System.out.println("=ERROR================================================================");
+      System.out.println("Please fill correct format. (x y n). ; y=y-axis; n=direction");
+      System.out.println("x = x-axis    options: (integer)");
+      System.out.println("y = y-axis    options: (integer)");
+      System.out.println("n=direction   options: (N / S / E / W)");
+      System.out.println("======================================================================\n");
+    }
+
+    return inputCarPositionSplit;
+  }
+
+  public String runInputCommand(Scanner scanner, String inputCarName) {
+    String inputCommand = "";
+    while (true) {
+      System.out.println("Please enter the commands for car " + inputCarName + ":");
+      inputCommand = scanner.nextLine();
+
+      if (CommonUtil.isValidCommand(inputCommand)) {
+        break;
+      }
+
+      // show error before prompt again
+      System.out.println("=ERROR==================");
+      System.out.println("Please enter the command");
+      System.out.println("========================\n");
+    }
+
+    return inputCommand;
+  }
+
+  public boolean runSimulation(List<Car> lsCar, int inputBoundaryX, int inputBoundaryY) {
+    if (lsCar.size() > 0) {
+      for (Car car : lsCar) {
+        List<Character> lsCommand = car.getCommands();
+
+        for (int index = 0; index < lsCommand.size(); index++) {
+          char currCommand = lsCommand.get(index);
+          if (currCommand == 'F') {
+            // move forward
+            int currDirection = car.getCurrDirection();
+            int currDirectionIndex = currDirection % 2;
+            if (currDirection > 1) {
+              // moving south or west (-1)
+              if (currDirectionIndex == 0) {
+                car.minusCurrCoordinateY();
+              } else {
+                car.minusCurrCoordinateX();
+              }
+            } else {
+              // moving north or east (+1)
+              if (currDirectionIndex == 0) {
+                car.plusCurrCoordinateY(inputBoundaryY);
+              } else {
+                car.plusCurrCoordinateX(inputBoundaryX);
+              }
+            }
+          } else if ((currCommand == 'R') || (currCommand == 'L')) {
+            // move direction
+            int newDirection = 9;
+            if (currCommand == 'R') {
+              newDirection = (car.getCurrDirection() + 1) % 4;
+            } else if (currCommand == 'L') {
+              newDirection = (car.getCurrDirection() - 1) % 4;
+            }
+
+            car.setCurrDirection(newDirection);
+          }
+        }
+      }
+
+      return true;
+    } else {
+      // show error before prompt again
+      System.out.println("=ERROR=====================================================================");
+      System.out.println("There is no car to run for simulation. Please choose option 1 to add a car.");
+      System.out.println("===========================================================================\n");
+
+      return false;
+    }
+  }
+
+  public void runSimulationResult(List<Car> lsCar) {
+    System.out.println("\nYour current list of cars are:");
+    for (int index = 0; index < lsCar.size(); index++) {
+      Car car = lsCar.get(index);
+      System.out.println("- " + car.getName() + ", (" + car.getCoordinate()[1] + "," +
+          car.getCoordinate()[0] + "), " + MapUtil.convertIndexToDirection(car.getDirection()) +
+          ", " + car.getCommands());
+    }
+
+    System.out.println("\nAfter simulation, the result is:");
+    for (int index = 0; index < lsCar.size(); index++) {
+      Car car = lsCar.get(index);
+      System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
+          car.getCurrCoordinate()[0] + "), " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+    }
+  }
+
+  public String runInputEndingOption(Scanner scanner) {
+    String inputEndingOption = "";
+    while (true) {
+      System.out.println("Please choose from the following options:");
+      System.out.println("[1] Start Over");
+      System.out.println("[2] Exit");
+
+      inputEndingOption = scanner.nextLine();
+
+      if ((inputEndingOption.trim().equals("1")) || (inputEndingOption.trim().equals("2"))) {
+        break;
+      }
+
+      System.out.println("=ERROR=================================================");
+      System.out.println("You have entered a wrong option. Selected option: " + inputEndingOption);
+      System.out.println("Please choose a correct option of 1 or 2");
+      System.out.println("=======================================================\n");
+
+    }
+
+    return inputEndingOption;
+  }
+
+  public void runExitScreen() {
+    System.out.println("Thank you for running the simulation. Goodbye!");
   }
 }
