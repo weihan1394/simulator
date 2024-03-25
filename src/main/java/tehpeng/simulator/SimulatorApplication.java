@@ -47,7 +47,7 @@ public class SimulatorApplication {
       String inputCarPositionSplitDirection = "";
 
       if (inputOption.trim().equals("1")) {
-        // adding a new car
+        // ask for name
         String inputCarName = "";
         while (true) {
           // add car
@@ -62,9 +62,9 @@ public class SimulatorApplication {
           System.out.println("============================\n");
         }
 
+        // ask for car position
         String inputCarPosition = "";
         String[] inputCarPositionSplit = null;
-
         while (true) {
           System.out.println("Please enter initial Position of car A in x y Direction format:");
           inputCarPosition = scanner.nextLine();
@@ -125,58 +125,85 @@ public class SimulatorApplication {
       } else if (inputOption.trim().equals("2")) {
         // run simulation
         // TODO: check if at least 1 car exist
-        for (Car car : lsCar) {
-          List<Character> lsCommand = car.getCommands();
+        if (lsCar.size() > 0) {
+          for (Car car : lsCar) {
+            List<Character> lsCommand = car.getCommands();
 
-          for (int index = 0; index < lsCommand.size(); index++) {
-
-            System.out.println("index " + index + ":   " + car.toString());
-            char currCommand = lsCommand.get(index);
-            if (currCommand == 'F') {
-              // move forward
-              int currDirection = car.getCurrDirection();
-              int currDirectionIndex = currDirection % 2;
-              if (currDirection > 1) {
-                // moving south or west (+1)
-                if (currDirectionIndex == 0) {
-                  // y + 1
-                  car.plusCurrCoordinateY(inputCarPositionSplitY);
+            for (int index = 0; index < lsCommand.size(); index++) {
+              char currCommand = lsCommand.get(index);
+              if (currCommand == 'F') {
+                // move forward
+                int currDirection = car.getCurrDirection();
+                int currDirectionIndex = currDirection % 2;
+                if (currDirection > 1) {
+                  // moving south or west (-1)
+                  if (currDirectionIndex == 0) {
+                    car.minusCurrCoordinateY();
+                  } else {
+                    car.minusCurrCoordinateX();
+                  }
                 } else {
-                  // x + 1
-                  car.plusCurrCoordinateX(inputCarPositionSplitX);
+                  // moving north or east (+1)
+                  if (currDirectionIndex == 0) {
+                    car.plusCurrCoordinateY(inputBoundaryY);
+                  } else {
+                    car.plusCurrCoordinateX(inputBoundaryX);
+                  }
                 }
-              } else {
-                // moving north of east (-1)
-                if (currDirectionIndex == 0) {
-                  // y - 1
-                  car.minusCurrCoordinateY();
-                } else {
-                  // x - 1
-                  car.minusCurrCoordinateX();
+              } else if ((currCommand == 'R') || (currCommand == 'L')) {
+                // move direction
+                int newDirection = 9;
+                if (currCommand == 'R') {
+                  newDirection = (car.getCurrDirection() + 1) % 4;
+                } else if (currCommand == 'L') {
+                  newDirection = (car.getCurrDirection() - 1) % 4;
                 }
-              }
-            } else if ((currCommand == 'R') || (currCommand == 'L')) {
-              // move direction
-              int newDirection = 9;
-              if (currCommand == 'R') {
-                newDirection = (car.getCurrDirection() + 1) % 4;
-              } else if (currCommand == 'L') {
-                newDirection = (car.getCurrDirection() - 1) % 4;
-              }
 
-              car.setCurrDirection(newDirection);
+                car.setCurrDirection(newDirection);
+              }
             }
           }
 
-          int nowY = inputBoundaryY - car.getCurrCoordinate()[0] - 1;
-          int nowX = inputBoundaryX - car.getCurrCoordinate()[1] - 1;
-          System.out.println("Y: " + inputBoundaryY + "---" + car.getCurrCoordinate()[0]);
-          System.out.println("X: " + inputBoundaryX + "---" + car.getCurrCoordinate()[1]);
-          System.out.println(
-              "x: " + nowX + "  y: " + nowY + "  direction:" + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+          System.out.println("\nYour current list of cars are:");
+          for (int index = 0; index < lsCar.size(); index++) {
+            Car car = lsCar.get(index);
+            System.out.println("- " + car.getName() + ", (" + car.getCoordinate()[1] + "," +
+                car.getCoordinate()[0] + "), " + MapUtil.convertIndexToDirection(car.getDirection()) +
+                ", " + car.getCommands());
+          }
+
+          System.out.println("\nAfter simulation, the result is:");
+          for (int index = 0; index < lsCar.size(); index++) {
+            Car car = lsCar.get(index);
+            System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
+                car.getCurrCoordinate()[0] + "), " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+          }
+
+          String inputEndingOption = "";
+          while (true) {
+            System.out.println("Please choose from the following options:");
+            System.out.println("[1] Start Over");
+            System.out.println("[2] Exit");
+
+            inputEndingOption = scanner.nextLine();
+
+            if ((inputEndingOption.trim().equals("1")) || (inputEndingOption.trim().equals("2"))) {
+              break;
+            } else {
+              System.out.println("=ERROR=================================================");
+              System.out.println("You have entered a wrong option. Selected option: " + inputOption);
+              System.out.println("Please choose a correct option of 1 or 2");
+              System.out.println("=======================================================\n");
+            }
+          }
+
+          if (inputEndingOption.trim().equals("2")) {
+            // exit
+            System.out.println("Thank you for running the simulation. Goodbye!");
+            break;
+          }
         }
 
-        break;
       } else {
         System.out.println("=ERROR==================================");
         System.out.println("You have entered a wrong option. Selected option: " + inputOption);

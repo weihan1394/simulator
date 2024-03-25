@@ -8,12 +8,12 @@ import tehpeng.simulator.util.CommonUtil;
 public class Car {
   // init data
   private String name;
-  private Integer[] coordinate;
+  private Integer[] coordinate; // [south, west]
   private int direction; // N:0 E:1 S:2 W:3
   private List<Character> commands;
 
   // moving
-  private Integer[] currCoordinate;
+  private Integer[] currCoordinate; // [south, west]
   private int currDirection; // N:0 E:1 S:2 W:3
   private int currCommand;
 
@@ -21,8 +21,8 @@ public class Car {
   public Car(String name, int x, int y, int maxX, int maxY, int direction, String command) {
     this.name = name;
     this.coordinate = new Integer[2];
-    coordinate[0] = maxY - y - 1; // north remaining
-    coordinate[1] = maxX - x - 1; // south remaining
+    coordinate[0] = y; // north remaining
+    coordinate[1] = x; // south remaining
     this.direction = direction;
     this.commands = CommonUtil.convertStringToListChar(command);
 
