@@ -145,7 +145,6 @@ public class SimulationService {
 
     if (lsCar.size() > 0) {
       for (Car car : lsCar) {
-        car.setIsOldCar();
         List<Character> lsCommand = car.getCommands();
 
         for (int index = 0; index < lsCommand.size(); index++) {
@@ -171,6 +170,7 @@ public class SimulationService {
             }
           } else if ((currCommand == 'R') || (currCommand == 'L')) {
             // move direction
+            // TODO: move to another method
             int newDirection = 9;
             if (currCommand == 'R') {
               newDirection = (car.getCurrDirection() + 1) % 4;
@@ -228,18 +228,6 @@ public class SimulationService {
   public void runExitScreen() {
     runNewScreen();
     System.out.println("Thank you for running the simulation. Goodbye!");
-  }
-
-  public List<Car> runResetCar(List<Car> lsCar) {
-    if (lsCar.size() > 0) {
-      for (Car car : lsCar) {
-        if (!car.getIsNewCar()) {
-          car.resetSimulation();
-        }
-      }
-    }
-
-    return lsCar;
   }
 
   private void runDisplayCarDetailsScreen(List<Car> lsCar) {

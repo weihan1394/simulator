@@ -20,9 +20,6 @@ public class SimulatorApplication {
     // keep details of the car
     List<Car> lsCar = new ArrayList<>();
     while (true) {
-      // Step 7: Reset all the car (this only happen for car that have been ran)
-      simulationService.runResetCar(lsCar);
-
       // Step 2: Request for option
       String inputOption = simulationService.runInputOption(scanner, lsCar);
 
@@ -57,6 +54,8 @@ public class SimulatorApplication {
           if (inputEndingOption.trim().equals("2")) {
             simulationService.runExitScreen();
             break;
+          } else if (inputEndingOption.trim().equals("1")) {
+            lsCar = new ArrayList<>();
           }
         }
       }

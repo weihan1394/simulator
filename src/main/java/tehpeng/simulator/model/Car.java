@@ -17,8 +17,6 @@ public class Car {
   private int currDirection; // N:0 E:1 S:2 W:3
   private int currCommand;
 
-  private boolean isNewCar;
-
   // Constructor
   public Car(String name, int x, int y, int maxX, int maxY, int direction, String command) {
     this.name = name;
@@ -33,7 +31,6 @@ public class Car {
     this.currCoordinate[1] = this.coordinate[1];
     this.currDirection = direction;
     this.currCommand = 0;
-    this.isNewCar = true;
   }
 
   public void resetSimulation() {
@@ -106,14 +103,6 @@ public class Car {
 
   public int getCurrCommand() {
     return currCommand;
-  }
-
-  public boolean getIsNewCar() {
-    return isNewCar;
-  }
-
-  public void setIsOldCar() {
-    this.isNewCar = false;
   }
 
   // toString method
