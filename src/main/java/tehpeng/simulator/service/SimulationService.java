@@ -132,8 +132,11 @@ public class SimulationService {
   }
 
   public boolean runSimulation(List<Car> lsCar, int inputBoundaryX, int inputBoundaryY) {
+    boolean result = false;
+
     if (lsCar.size() > 0) {
       for (Car car : lsCar) {
+        car.setIsOldCar();
         List<Character> lsCommand = car.getCommands();
 
         for (int index = 0; index < lsCommand.size(); index++) {
@@ -171,15 +174,17 @@ public class SimulationService {
         }
       }
 
-      return true;
+      result = true;
     } else {
       // show error before prompt again
       System.out.println("=ERROR=====================================================================");
       System.out.println("There is no car to run for simulation. Please choose option 1 to add a car.");
       System.out.println("===========================================================================\n");
 
-      return false;
+      result = false;
     }
+
+    return result;
   }
 
   public void runSimulationResult(List<Car> lsCar) {
@@ -224,5 +229,25 @@ public class SimulationService {
 
   public void runExitScreen() {
     System.out.println("Thank you for running the simulation. Goodbye!");
+  }
+
+  public List<Car> runResetCar(List<Car> lsCar) {
+    if (lsCar.size() > 0) {
+      for (Car car : lsCar) {
+        if (!car.getIsNewCar()) {
+          car.resetSimulation();
+        }
+      }
+    }
+
+    return lsCar;
+  }
+
+  public void runRestartScreen(List<Car> lsCar) {
+    System.out.println("\n\nYour current list of cars are: ");
+    for (Car car : lsCar) {
+      System.out.println("- " + car.getName() + " (" + car.getCoordinate()[0] + "," + car.getCoordinate()[1] +
+          car.getDirection() + ", " + car.getCommands());
+    }
   }
 }

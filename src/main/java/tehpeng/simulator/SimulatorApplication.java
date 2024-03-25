@@ -20,6 +20,9 @@ public class SimulatorApplication {
     // keep details of the car
     List<Car> lsCar = new ArrayList<>();
     while (true) {
+      // Step 7: Reset all the car (this only happen for car that have been ran)
+      simulationService.runResetCar(lsCar);
+
       // Step 2: Request for option
       String inputOption = simulationService.runInputOption(scanner);
 
@@ -45,13 +48,15 @@ public class SimulatorApplication {
             MapUtil.convertDirectionToIndex(inputCarPositionSplitDirection), inputCommand);
         lsCar.add(car);
       } else if (inputOption.trim().equals("2")) {
-        // run simulation
+        // Step 6: Run simulation
         boolean simulationResult = simulationService.runSimulation(lsCar, inputBoundaryX, inputBoundaryY);
         if (simulationResult) {
           simulationService.runSimulationResult(lsCar);
 
           String inputEndingOption = simulationService.runInputEndingOption(scanner);
-          if (inputEndingOption.trim().equals("2")) {
+          if (inputEndingOption.trim().equals("1")) {
+            simulationService.runRestartScreen(lsCar);
+          } else if (inputEndingOption.trim().equals("2")) {
             simulationService.runExitScreen();
             break;
           }
