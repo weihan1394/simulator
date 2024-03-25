@@ -47,11 +47,13 @@ public class CommonUtil {
   }
 
   public static boolean isValidBoundarySize(String[] value) {
-    String value1 = value[0];
-    String value2 = value[1];
-    // x and y must be integer
-    if ((value.length == 2) && (isValidInteger(value1) && (isValidInteger(value2)))) {
-      return true;
+    if (value.length == 2) {
+      String value1 = value[0];
+      String value2 = value[1];
+      // x and y must be integer
+      if (isValidInteger(value1) && isValidInteger(value2)) {
+        return true;
+      }
     }
 
     return false;

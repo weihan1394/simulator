@@ -32,8 +32,13 @@ public class SimulationService {
     return inputBoundarySplit;
   }
 
-  public String runInputOption(Scanner scanner) {
+  public String runInputOption(Scanner scanner, List<Car> lsCar) {
+    runNewScreen();
     String inputOption = "";
+    if (lsCar.size() > 0) {
+      runDisplayCarDetailsScreen(lsCar);
+    }
+
     while (true) {
       System.out.println("Please choose from the following options: ");
       System.out.println("[1] Add a car to the field");
@@ -55,6 +60,7 @@ public class SimulationService {
   }
 
   public String runInputCarName(Scanner scanner) {
+    runNewScreen();
     String inputCarName = "";
     while (true) {
       // add car
@@ -73,6 +79,7 @@ public class SimulationService {
   }
 
   public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY) {
+    runNewScreen();
     String inputCarPosition = "";
     String[] inputCarPositionSplit = null;
     while (true) {
@@ -113,6 +120,7 @@ public class SimulationService {
   }
 
   public String runInputCommand(Scanner scanner, String inputCarName) {
+    runNewScreen();
     String inputCommand = "";
     while (true) {
       System.out.println("Please enter the commands for car " + inputCarName + ":");
@@ -132,6 +140,7 @@ public class SimulationService {
   }
 
   public boolean runSimulation(List<Car> lsCar, int inputBoundaryX, int inputBoundaryY) {
+    runNewScreen();
     boolean result = false;
 
     if (lsCar.size() > 0) {
@@ -188,23 +197,12 @@ public class SimulationService {
   }
 
   public void runSimulationResult(List<Car> lsCar) {
-    System.out.println("\nYour current list of cars are:");
-    for (int index = 0; index < lsCar.size(); index++) {
-      Car car = lsCar.get(index);
-      System.out.println("- " + car.getName() + ", (" + car.getCoordinate()[1] + "," +
-          car.getCoordinate()[0] + "), " + MapUtil.convertIndexToDirection(car.getDirection()) +
-          ", " + car.getCommands());
-    }
-
-    System.out.println("\nAfter simulation, the result is:");
-    for (int index = 0; index < lsCar.size(); index++) {
-      Car car = lsCar.get(index);
-      System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
-          car.getCurrCoordinate()[0] + "), " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
-    }
+    runDisplayCarDetailsScreen(lsCar);
+    runDisplayCarDetailsScreenAfterSimulation(lsCar);
   }
 
   public String runInputEndingOption(Scanner scanner) {
+    runNewScreen();
     String inputEndingOption = "";
     while (true) {
       System.out.println("Please choose from the following options:");
@@ -228,6 +226,7 @@ public class SimulationService {
   }
 
   public void runExitScreen() {
+    runNewScreen();
     System.out.println("Thank you for running the simulation. Goodbye!");
   }
 
@@ -243,11 +242,24 @@ public class SimulationService {
     return lsCar;
   }
 
-  public void runRestartScreen(List<Car> lsCar) {
-    System.out.println("\n\nYour current list of cars are: ");
+  private void runDisplayCarDetailsScreen(List<Car> lsCar) {
+    System.out.println("Your current list of cars are: ");
     for (Car car : lsCar) {
-      System.out.println("- " + car.getName() + " (" + car.getCoordinate()[0] + "," + car.getCoordinate()[1] +
-          car.getDirection() + ", " + car.getCommands());
+      System.out.println("- " + car.getName() + ", (" + car.getCoordinate()[1] + "," + car.getCoordinate()[0] +
+          ") " + MapUtil.convertIndexToDirection(car.getDirection()) + ", " + car.getCommands());
     }
+  }
+
+  private void runDisplayCarDetailsScreenAfterSimulation(List<Car> lsCar) {
+    System.out.println("After simulation, the result is:");
+    for (int index = 0; index < lsCar.size(); index++) {
+      Car car = lsCar.get(index);
+      System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
+          car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+    }
+  }
+
+  private void runNewScreen() {
+    System.out.println("\n\n");
   }
 }

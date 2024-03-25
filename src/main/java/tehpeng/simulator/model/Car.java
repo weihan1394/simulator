@@ -8,12 +8,12 @@ import tehpeng.simulator.util.CommonUtil;
 public class Car {
   // init data
   private String name;
-  private Integer[] coordinate; // [south, west]
+  private Integer[] coordinate; // [south, west] [y, x]
   private int direction; // N:0 E:1 S:2 W:3
   private List<Character> commands;
 
   // moving
-  private Integer[] currCoordinate; // [south, west]
+  private Integer[] currCoordinate; // [south, west] [y, x]
   private int currDirection; // N:0 E:1 S:2 W:3
   private int currCommand;
 

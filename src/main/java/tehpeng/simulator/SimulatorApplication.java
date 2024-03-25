@@ -24,7 +24,7 @@ public class SimulatorApplication {
       simulationService.runResetCar(lsCar);
 
       // Step 2: Request for option
-      String inputOption = simulationService.runInputOption(scanner);
+      String inputOption = simulationService.runInputOption(scanner, lsCar);
 
       int inputCarPositionSplitX = 0;
       int inputCarPositionSplitY = 0;
@@ -54,9 +54,7 @@ public class SimulatorApplication {
           simulationService.runSimulationResult(lsCar);
 
           String inputEndingOption = simulationService.runInputEndingOption(scanner);
-          if (inputEndingOption.trim().equals("1")) {
-            simulationService.runRestartScreen(lsCar);
-          } else if (inputEndingOption.trim().equals("2")) {
+          if (inputEndingOption.trim().equals("2")) {
             simulationService.runExitScreen();
             break;
           }
