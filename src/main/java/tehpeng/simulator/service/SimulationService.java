@@ -7,6 +7,7 @@ import tehpeng.simulator.util.CommonUtil;
 import tehpeng.simulator.util.MapUtil;
 
 public class SimulationService {
+
   public void runStartScreen() {
     System.out.println("Welcome to Auto Driving Car Simulation!");
   }
@@ -143,45 +144,15 @@ public class SimulationService {
     runNewScreen();
     boolean result = false;
 
+    runDisplayCarDetailsScreen(lsCar);
+
     if (lsCar.size() > 0) {
-      for (Car car : lsCar) {
-        List<Character> lsCommand = car.getCommands();
+      CarSimulatorService carSimulator = new CarSimulatorService(lsCar, inputBoundaryX, inputBoundaryY);
+      do {
+        carSimulator.moveNext();
+      } while (carSimulator.hasCarsOnMap());
 
-        for (int index = 0; index < lsCommand.size(); index++) {
-          char currCommand = lsCommand.get(index);
-          if (currCommand == 'F') {
-            // move forward
-            int currDirection = car.getCurrDirection();
-            int currDirectionIndex = currDirection % 2;
-            if (currDirection > 1) {
-              // moving south or west (-1)
-              if (currDirectionIndex == 0) {
-                car.minusCurrCoordinateY();
-              } else {
-                car.minusCurrCoordinateX();
-              }
-            } else {
-              // moving north or east (+1)
-              if (currDirectionIndex == 0) {
-                car.plusCurrCoordinateY(inputBoundaryY);
-              } else {
-                car.plusCurrCoordinateX(inputBoundaryX);
-              }
-            }
-          } else if ((currCommand == 'R') || (currCommand == 'L')) {
-            // move direction
-            // TODO: move to another method
-            int newDirection = 9;
-            if (currCommand == 'R') {
-              newDirection = (car.getCurrDirection() + 1) % 4;
-            } else if (currCommand == 'L') {
-              newDirection = (car.getCurrDirection() - 1) % 4;
-            }
-
-            car.setCurrDirection(newDirection);
-          }
-        }
-      }
+      runDisplayCarDetailsScreenAfterSimulation(carSimulator.cars);
 
       result = true;
     } else {
@@ -241,9 +212,17 @@ public class SimulationService {
   private void runDisplayCarDetailsScreenAfterSimulation(List<Car> lsCar) {
     System.out.println("After simulation, the result is:");
     for (int index = 0; index < lsCar.size(); index++) {
+      // if the curposition < command size = print the collide
       Car car = lsCar.get(index);
-      System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
-          car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+
+      if (car.collided) {
+        System.out.println("- " + car.getName() + "collides with " + car.collided + " at step " + car.getCurrCommand());
+      } else {
+
+        System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
+            car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+
+      }
     }
   }
 

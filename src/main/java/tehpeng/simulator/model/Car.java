@@ -1,5 +1,6 @@
 package tehpeng.simulator.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +18,11 @@ public class Car {
   private int currDirection; // N:0 E:1 S:2 W:3
   private int currCommand;
 
+  public boolean collided;
+  public List<Integer> collidedWith;
+
+  public boolean completed;
+
   // Constructor
   public Car(String name, int x, int y, int maxX, int maxY, int direction, String command) {
     this.name = name;
@@ -31,14 +37,7 @@ public class Car {
     this.currCoordinate[1] = this.coordinate[1];
     this.currDirection = direction;
     this.currCommand = 0;
-  }
-
-  public void resetSimulation() {
-    this.currCoordinate[0] = this.coordinate[0];
-    this.currCoordinate[1] = this.coordinate[1];
-    this.currDirection = this.direction;
-
-    this.currCommand = 0;
+    this.collidedWith = new ArrayList<>();
   }
 
   public String getName() {
@@ -103,6 +102,17 @@ public class Car {
 
   public int getCurrCommand() {
     return currCommand;
+  }
+
+  public char nextCommand() {
+    if (currCommand + 1 == this.commands.size()) {
+      return 0;
+    }
+    return this.commands.get(currCommand++);
+  }
+
+  public void setCollided() {
+    this.collided = true;
   }
 
   // toString method
