@@ -1,12 +1,14 @@
-package tehpeng.simulator.model;
+package tehpeng.simulator.model.old;
 
 public class Coordinate {
   int x;
   int y;
+  char direction;
 
-  public Coordinate(int x, int y) {
+  public Coordinate(int x, int y, char direction) {
     this.x = x;
     this.y = y;
+    this.direction = direction;
   }
 
   public int getX() {
@@ -15,6 +17,10 @@ public class Coordinate {
 
   public int getY() {
     return y;
+  }
+
+  public char getDirection() {
+    return direction;
   }
 
   public void forwardNorth() {

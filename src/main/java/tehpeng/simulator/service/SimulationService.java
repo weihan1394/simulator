@@ -1,6 +1,6 @@
 package tehpeng.simulator.service;
 
-import tehpeng.simulator.model.Coordinate;
+import tehpeng.simulator.model.old.Coordinate;
 
 public class SimulationService {
   public void command(char instruction, int x, int y) {

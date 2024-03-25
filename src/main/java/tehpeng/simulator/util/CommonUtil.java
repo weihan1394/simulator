@@ -1,5 +1,6 @@
 package tehpeng.simulator.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -92,5 +93,18 @@ public class CommonUtil {
     }
 
     return false;
+  }
+
+  public static List<Character> convertStringToListChar(String value) {
+    List<Character> lsOutput = new ArrayList<>();
+    for (char c : value.toCharArray()) {
+      lsOutput.add(c);
+    }
+
+    return lsOutput;
+  }
+
+  public static Character convertStringToChar(String value) {
+    return value.charAt(0);
   }
 }

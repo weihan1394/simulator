@@ -2,6 +2,7 @@ package tehpeng.simulator;
 
 import tehpeng.simulator.model.Car;
 import tehpeng.simulator.util.CommonUtil;
+import tehpeng.simulator.util.MapUtil;
 
 import java.util.*;
 
@@ -12,19 +13,19 @@ public class SimulatorApplication {
     System.out.println("Welcome to Auto Driving Car Simulation!");
 
     String inputBoundary = "";
-    int x = 0, y = 0;
+    int inputBoundaryX = 0, inputBoundaryY = 0;
     while (true) {
       System.out.println("Please enter the width and height of the simulation field in x y format");
       inputBoundary = scanner.nextLine();
       String[] inputBoundarySplit = inputBoundary.split(" ");
 
       if (CommonUtil.isValidBoundarySize(inputBoundarySplit)) {
-        x = Integer.parseInt(inputBoundarySplit[0]);
-        y = Integer.parseInt(inputBoundarySplit[1]);
+        inputBoundaryX = Integer.parseInt(inputBoundarySplit[0]);
+        inputBoundaryY = Integer.parseInt(inputBoundarySplit[1]);
+        System.out.println("You have created a field of " + inputBoundaryX + " x " + inputBoundaryY);
 
         break;
       }
-      System.out.println("You have created a field of " + x + " x " + y);
 
       // show error before prompt again
       System.out.println("=ERROR================================================");
@@ -40,6 +41,10 @@ public class SimulatorApplication {
       System.out.println("[1] Add a car to the field");
       System.out.println("[2] Run simulation");
       inputOption = scanner.nextLine();
+
+      int inputCarPositionSplitX = 0;
+      int inputCarPositionSplitY = 0;
+      String inputCarPositionSplitDirection = "";
 
       if (inputOption.trim().equals("1")) {
         // adding a new car
@@ -59,6 +64,7 @@ public class SimulatorApplication {
 
         String inputCarPosition = "";
         String[] inputCarPositionSplit = null;
+
         while (true) {
           System.out.println("Please enter initial Position of car A in x y Direction format:");
           inputCarPosition = scanner.nextLine();
@@ -66,21 +72,23 @@ public class SimulatorApplication {
 
           if (inputCarPositionSplit.length == 3) {
             // check value options
-            String inputFourSplit1 = inputCarPositionSplit[0];
-            String inputFourSplit2 = inputCarPositionSplit[1];
-            String inputFourSplit3 = inputCarPositionSplit[2];
-
-            boolean inputFourSplit1StatusInt = CommonUtil.isValidInteger(inputFourSplit1);
-            boolean inputFourSplit2StatusInt = CommonUtil.isValidInteger(inputFourSplit2);
-            boolean inputFourSplit3StatusDir = CommonUtil.isValidDirection(inputFourSplit3);
+            boolean inputFourSplit1StatusInt = CommonUtil.isValidInteger(inputCarPositionSplit[0]);
+            boolean inputFourSplit2StatusInt = CommonUtil.isValidInteger(inputCarPositionSplit[1]);
+            boolean inputFourSplit3StatusDir = CommonUtil.isValidDirection(inputCarPositionSplit[2]);
 
             if (inputFourSplit1StatusInt && inputFourSplit2StatusInt && inputFourSplit3StatusDir) {
               // checking for boundary here to make sure can cast to integer
-              boolean inputFourSplit1StatusBoundary = CommonUtil.isValidBoundary(Integer.parseInt(inputFourSplit1), x);
-              boolean inputFourSplit2StatusBoundary = CommonUtil.isValidBoundary(Integer.parseInt(inputFourSplit2), x);
+              boolean inputFourSplit1StatusBoundary = CommonUtil
+                  .isValidBoundary(Integer.parseInt(inputCarPositionSplit[0]), inputBoundaryX);
+              boolean inputFourSplit2StatusBoundary = CommonUtil
+                  .isValidBoundary(Integer.parseInt(inputCarPositionSplit[1]), inputBoundaryX);
 
               if (inputFourSplit1StatusBoundary && inputFourSplit2StatusBoundary) {
                 // valid input
+                inputCarPositionSplitX = Integer.parseInt(inputCarPositionSplit[0]);
+                inputCarPositionSplitY = Integer.parseInt(inputCarPositionSplit[1]);
+                inputCarPositionSplitDirection = inputCarPositionSplit[2];
+
                 break;
               }
             }
@@ -111,14 +119,63 @@ public class SimulatorApplication {
           System.out.println("========================\n");
         }
 
-        Car car = new Car(x, y, inputCarName, inputCommand, inputCarPositionSplit);
+        Car car = new Car(inputCarName, inputCarPositionSplitX, inputCarPositionSplitY, inputBoundaryX, inputBoundaryY,
+            MapUtil.convertDirectionToIndex(inputCarPositionSplitDirection), inputCommand);
         lsCar.add(car);
       } else if (inputOption.trim().equals("2")) {
         // run simulation
         // TODO: check if at least 1 car exist
         for (Car car : lsCar) {
-          System.out.println(car.toString());
+          List<Character> lsCommand = car.getCommands();
+
+          for (int index = 0; index < lsCommand.size(); index++) {
+
+            System.out.println("index " + index + ":   " + car.toString());
+            char currCommand = lsCommand.get(index);
+            if (currCommand == 'F') {
+              // move forward
+              int currDirection = car.getCurrDirection();
+              int currDirectionIndex = currDirection % 2;
+              if (currDirection > 1) {
+                // moving south or west (+1)
+                if (currDirectionIndex == 0) {
+                  // y + 1
+                  car.plusCurrCoordinateY(inputCarPositionSplitY);
+                } else {
+                  // x + 1
+                  car.plusCurrCoordinateX(inputCarPositionSplitX);
+                }
+              } else {
+                // moving north of east (-1)
+                if (currDirectionIndex == 0) {
+                  // y - 1
+                  car.minusCurrCoordinateY();
+                } else {
+                  // x - 1
+                  car.minusCurrCoordinateX();
+                }
+              }
+            } else if ((currCommand == 'R') || (currCommand == 'L')) {
+              // move direction
+              int newDirection = 9;
+              if (currCommand == 'R') {
+                newDirection = (car.getCurrDirection() + 1) % 4;
+              } else if (currCommand == 'L') {
+                newDirection = (car.getCurrDirection() - 1) % 4;
+              }
+
+              car.setCurrDirection(newDirection);
+            }
+          }
+
+          int nowY = inputBoundaryY - car.getCurrCoordinate()[0] - 1;
+          int nowX = inputBoundaryX - car.getCurrCoordinate()[1] - 1;
+          System.out.println("Y: " + inputBoundaryY + "---" + car.getCurrCoordinate()[0]);
+          System.out.println("X: " + inputBoundaryX + "---" + car.getCurrCoordinate()[1]);
+          System.out.println(
+              "x: " + nowX + "  y: " + nowY + "  direction:" + MapUtil.convertIndexToDirection(car.getCurrDirection()));
         }
+
         break;
       } else {
         System.out.println("=ERROR==================================");
