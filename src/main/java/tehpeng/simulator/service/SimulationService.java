@@ -150,7 +150,7 @@ public class SimulationService {
         System.out.println(currCommand + "========");
         // move car
         for (Car car : lsCar) {
-          car.setCurrCommand(currCommand);
+          // car.setCurrCommand(currCommand);
           nextMove(car, currCommand, inputBoundaryX, inputBoundaryY);
           System.out.println(car.toString());
         }
@@ -159,24 +159,50 @@ public class SimulationService {
         for (int car1Index = 0; car1Index < lsCar.size(); car1Index++) {
           Car car1 = lsCar.get(car1Index);
 
-          for (int car2Index = car1Index + 1; car2Index < lsCar.size(); car2Index++) {
-            Car car2 = lsCar.get(car2Index);
+          if (car1.getCollisionWith().size() != 0) {
+            // collision
+            continue;
+          } else {
+            // no collision yet
+            for (int car2Index = car1Index + 1; car2Index < lsCar.size(); car2Index++) {
+              Car car2 = lsCar.get(car2Index);
 
-            // check if car1 and car2 have same coordinate
-            boolean collided = MapUtil.checkCollision(car1, car2);
-            if (collided) {
-              // stop the car
-              // check if car1 or car2 already got collided and is in the current move
-              if (car1.getCollisionWith().size() == 0) {
+              // check if car1 and car2 have same coordinate
+              boolean collided = MapUtil.checkCollision(car1, car2);
+              if (collided) {
+                // stop the car
+                // check if car1 or car2 already got collided and is in the current move
                 car1.addCollision(car2.getName());
                 car1.setCompleted();
+
+                if (car2.getCollisionWith().size() == 0) {
+                  // check for car2 collision size == 0
+                  // if not = 0 means that the car2 have already been collided so we do not add
+                  // the collision in
+                  car2.addCollision(car1.getName());
+                  car2.setCompleted();
+                }
               }
-              if (car2.getCollisionWith().size() == 0) {
-                car2.addCollision(car1.getName());
-                car2.setCompleted();
+            }
+
+            for (int car2Index = car1Index - 1; car2Index >= 0; car2Index--) {
+              // check for previous already collided car
+              Car car2 = lsCar.get(car2Index);
+
+              if ((car2.getCollisionWith().size() != 0) && (car2.getCurrCommand() != currCommand)) {
+                // only check for car that already collided
+                // car2.getCollisionWith().size() != 0 ==> refers to car that have been collided
+                // car2.getCurrCommand() != currCommand ==> refers to car that have been
+                // collided and added in the same round
+                boolean collided = MapUtil.checkCollision(car1, car2);
+                if (collided) {
+                  car1.addCollision(car2.getName());
+                  car1.setCompleted();
+                }
               }
             }
           }
+
         }
 
         // check if all the cars collided or command ended
@@ -208,6 +234,7 @@ public class SimulationService {
 
     result = true;
 
+    System.out.println("DONEDONEDONEDONEDONEDONEDONE");
     for (Car car : lsCar) {
       System.out.println(car.toString());
     }
@@ -217,6 +244,8 @@ public class SimulationService {
 
   private void nextMove(Car car, int index, int inputBoundaryX, int inputBoundaryY) {
     if ((car.getCollisionWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())) {
+      // set current command
+      car.setCurrCommand(index);
       // car not collided and car still have command
       char currCommand = car.getCommands().get(index);
       if (currCommand == 'F') {
@@ -250,7 +279,6 @@ public class SimulationService {
         }
 
         car.setCurrDirection(newDirection);
-        car.setCurrCommand(index);
       }
 
       // check if the car still have any more command?
