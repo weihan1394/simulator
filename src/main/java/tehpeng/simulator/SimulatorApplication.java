@@ -18,10 +18,11 @@ public class SimulatorApplication {
     int inputBoundaryY = Integer.parseInt(inputBoundarySplit[1]);
 
     // keep details of the car
-    List<Car> lsCar = new ArrayList<>();
+    // List<Car> lsCar = new ArrayList<>();
+    HashMap<String, Car> lsCarMap = new HashMap<>();
     while (true) {
       // Step 2: Request for option
-      String inputOption = simulationService.runInputOption(scanner, lsCar);
+      String inputOption = simulationService.runInputOption(scanner, lsCarMap);
 
       int inputCarPositionSplitX = 0;
       int inputCarPositionSplitY = 0;
@@ -44,19 +45,19 @@ public class SimulatorApplication {
         // Add car to the list
         Car car = new Car(inputCarName, inputCarPositionSplitX, inputCarPositionSplitY, inputBoundaryX, inputBoundaryY,
             MapUtil.convertDirectionToIndex(inputCarPositionSplitDirection), inputCommand);
-        lsCar.add(car);
+        lsCarMap.put(car.getName(), car);
       } else if (inputOption.trim().equals("2")) {
         // Step 6: Run simulation
-        boolean simulationResult = simulationService.runSimulation(lsCar, inputBoundaryX, inputBoundaryY);
+        boolean simulationResult = simulationService.runSimulation(lsCarMap, inputBoundaryX, inputBoundaryY);
         if (simulationResult) {
-          simulationService.runSimulationResult(lsCar);
+          simulationService.runSimulationResult(lsCarMap);
 
           String inputEndingOption = simulationService.runInputEndingOption(scanner);
           if (inputEndingOption.trim().equals("2")) {
             simulationService.runExitScreen();
             break;
           } else if (inputEndingOption.trim().equals("1")) {
-            lsCar = new ArrayList<>();
+            lsCarMap = new HashMap<>();
           }
         }
       }

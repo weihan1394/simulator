@@ -1,9 +1,8 @@
 package tehpeng.simulator.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import tehpeng.simulator.util.CommonUtil;
 
@@ -18,7 +17,17 @@ public class Car {
   private Integer[] currCoordinate; // [south, west] [y, x]
   private int currDirection; // N:0 E:1 S:2 W:3
   private int currCommand;
-  private Map<String, Integer> lsCollisionWith;
+  // private Map<String, Integer> lsCollisionWith;
+  private List<String> collisionWith;
+
+  public List<String> getCollisionWith() {
+    return collisionWith;
+  }
+
+  public void setCollisionWith(List<String> collisionWith) {
+    this.collisionWith = collisionWith;
+  }
+
   private boolean completed;
 
   // Constructor
@@ -35,7 +44,8 @@ public class Car {
     this.currCoordinate[1] = this.coordinate[1];
     this.currDirection = direction;
     this.currCommand = 0;
-    this.lsCollisionWith = new HashMap<>();
+    // this.lsCollisionWith = new HashMap<>();
+    this.collisionWith = new ArrayList<>();
     this.completed = false;
   }
 
@@ -51,13 +61,13 @@ public class Car {
     this.currCommand = currCommand;
   }
 
-  public void setLsCollisionWith(Map<String, Integer> lsCollisionWith) {
-    this.lsCollisionWith = lsCollisionWith;
-  }
+  // public void setLsCollisionWith(Map<String, Integer> lsCollisionWith) {
+  // this.lsCollisionWith = lsCollisionWith;
+  // }
 
-  public Map<String, Integer> getCollisionWith() {
-    return lsCollisionWith;
-  }
+  // public Map<String, Integer> getCollisionWith() {
+  // return lsCollisionWith;
+  // }
 
   public void resetSimulation() {
     this.currCoordinate[0] = this.coordinate[0];
@@ -131,9 +141,9 @@ public class Car {
     return currCommand;
   }
 
-  public void addCollision(String carName) {
-    lsCollisionWith.put(carName, currCommand);
-  }
+  // public void addCollision(String carName) {
+  // lsCollisionWith.put(carName, currCommand);
+  // }
 
   // toString method
   @Override
@@ -146,7 +156,7 @@ public class Car {
         ", currCoordinate=" + Arrays.toString(currCoordinate) +
         ", currDirection=" + currDirection +
         ", currCommand=" + currCommand +
-        ", lsCollisionWith=" + lsCollisionWith +
+        ", lsCollisionWith=" + collisionWith +
         '}';
   }
 }

@@ -32,11 +32,11 @@ public class SimulationService {
     return inputBoundarySplit;
   }
 
-  public String runInputOption(Scanner scanner, List<Car> lsCar) {
+  public String runInputOption(Scanner scanner, HashMap<String, Car> lsCarMap) {
     runNewScreen();
     String inputOption = "";
-    if (lsCar.size() > 0) {
-      runDisplayCarDetailsScreen(lsCar);
+    if (lsCarMap.size() > 0) {
+      runDisplayCarDetailsScreen(lsCarMap);
     }
 
     while (true) {
@@ -139,75 +139,69 @@ public class SimulationService {
     return inputCommand;
   }
 
-  public boolean runSimulation(List<Car> lsCar, int inputBoundaryX, int inputBoundaryY) {
+  public boolean runSimulation(HashMap<String, Car> lsCarMap, int inputBoundaryX, int inputBoundaryY) {
     runNewScreen();
     boolean result = false;
 
-    if (lsCar.size() > 0) {
+    if (lsCarMap.size() > 0) {
       boolean next = true;
       int currCommand = 0;
       while (next) {
-        System.out.println(currCommand + "========");
+        System.out.println(currCommand + "###");
         // move car
-        for (Car car : lsCar) {
-          // car.setCurrCommand(currCommand);
+        HashMap<String, List<String>> coordinateMap = new HashMap<>();
+
+        for (String key : lsCarMap.keySet()) {
+          Car car = lsCarMap.get(key);
+          // move car one command
           nextMove(car, currCommand, inputBoundaryX, inputBoundaryY);
+
+          String coordString = Arrays.toString(car.getCurrCoordinate());
+          // String.join(", ",
+          // Arrays.asList(car.getCurrCoordinate()).stream().map(Object::toString).toArray(String[]::new));
+          if (!coordinateMap.containsKey(coordString)) {
+            // new coordinate; add the coordinate and the index (car)
+            List<String> indexList = new ArrayList<>();
+            indexList.add(car.getName());
+            coordinateMap.put(coordString, indexList);
+          } else {
+            // existing coordinate; add the index (car)
+            List<String> indexList = coordinateMap.get(coordString);
+            indexList.add(car.getName());
+          }
+
           System.out.println(car.toString());
         }
 
-        // check car for collision
-        for (int car1Index = 0; car1Index < lsCar.size(); car1Index++) {
-          Car car1 = lsCar.get(car1Index);
+        // coordinateMap to see if there is any coordinate that have more than one car
+        for (String key : coordinateMap.keySet()) {
+          List<String> lsCarCollided = coordinateMap.get(key);
 
-          if (car1.getCollisionWith().size() != 0) {
-            // collision
-            continue;
-          } else {
-            // no collision yet
-            for (int car2Index = car1Index + 1; car2Index < lsCar.size(); car2Index++) {
-              Car car2 = lsCar.get(car2Index);
+          // more than one car collided
+          if (lsCarCollided.size() > 1) {
+            // check if the car already collided before
+            // yes: ignore
+            // no: set collided = true, remove ownself
 
-              // check if car1 and car2 have same coordinate
-              boolean collided = MapUtil.checkCollision(car1, car2);
-              if (collided) {
-                // stop the car
-                // check if car1 or car2 already got collided and is in the current move
-                car1.addCollision(car2.getName());
-                car1.setCompleted();
+            for (String carCollidedName : lsCarCollided) {
+              Car currCarCollided = lsCarMap.get(carCollidedName);
 
-                if (car2.getCollisionWith().size() == 0) {
-                  // check for car2 collision size == 0
-                  // if not = 0 means that the car2 have already been collided so we do not add
-                  // the collision in
-                  car2.addCollision(car1.getName());
-                  car2.setCompleted();
-                }
-              }
-            }
-
-            for (int car2Index = car1Index - 1; car2Index >= 0; car2Index--) {
-              // check for previous already collided car
-              Car car2 = lsCar.get(car2Index);
-
-              if ((car2.getCollisionWith().size() != 0) && (car2.getCurrCommand() != currCommand)) {
-                // only check for car that already collided
-                // car2.getCollisionWith().size() != 0 ==> refers to car that have been collided
-                // car2.getCurrCommand() != currCommand ==> refers to car that have been
-                // collided and added in the same round
-                boolean collided = MapUtil.checkCollision(car1, car2);
-                if (collided) {
-                  car1.addCollision(car2.getName());
-                  car1.setCompleted();
-                }
+              if (currCarCollided.getCollisionWith().size() == 0) {
+                List<String> lsCurrCarCollided = new ArrayList<>();
+                lsCurrCarCollided.addAll(lsCarCollided);
+                lsCurrCarCollided.remove(currCarCollided.getName());
+                currCarCollided.setCollisionWith(lsCurrCarCollided);
+                // collided; means the car wont move anymore
+                currCarCollided.setCompleted();
               }
             }
           }
-
         }
 
         // check if all the cars collided or command ended
         Set<String> lsCompleted = new HashSet<>(); // if same value is added it will be ignored
-        for (Car car : lsCar) {
+        for (String key : lsCarMap.keySet()) {
+          Car car = lsCarMap.get(key);
           if (car.isCompleted()) {
             lsCompleted.add("true");
           } else {
@@ -235,7 +229,8 @@ public class SimulationService {
     result = true;
 
     System.out.println("DONEDONEDONEDONEDONEDONEDONE");
-    for (Car car : lsCar) {
+    for (String key : lsCarMap.keySet()) {
+      Car car = lsCarMap.get(key);
       System.out.println(car.toString());
     }
 
@@ -288,9 +283,9 @@ public class SimulationService {
     }
   }
 
-  public void runSimulationResult(List<Car> lsCar) {
-    runDisplayCarDetailsScreen(lsCar);
-    runDisplayCarDetailsScreenAfterSimulation(lsCar);
+  public void runSimulationResult(HashMap<String, Car> lsCarMap) {
+    runDisplayCarDetailsScreen(lsCarMap);
+    runDisplayCarDetailsScreenAfterSimulation(lsCarMap);
   }
 
   public String runInputEndingOption(Scanner scanner) {
@@ -322,18 +317,22 @@ public class SimulationService {
     System.out.println("Thank you for running the simulation. Goodbye!");
   }
 
-  private void runDisplayCarDetailsScreen(List<Car> lsCar) {
+  private void runDisplayCarDetailsScreen(HashMap<String, Car> lsCarMap) {
     System.out.println("Your current list of cars are: ");
-    for (Car car : lsCar) {
+
+    for (String key : lsCarMap.keySet()) {
+      Car car = lsCarMap.get(key);
       System.out.println("- " + car.getName() + ", (" + car.getCoordinate()[1] + "," + car.getCoordinate()[0] +
           ") " + MapUtil.convertIndexToDirection(car.getDirection()) + ", " + car.getCommands());
     }
   }
 
-  private void runDisplayCarDetailsScreenAfterSimulation(List<Car> lsCar) {
+  private void runDisplayCarDetailsScreenAfterSimulation(HashMap<String, Car> lsCarMap) {
     System.out.println("After simulation, the result is:");
-    for (int index = 0; index < lsCar.size(); index++) {
-      Car car = lsCar.get(index);
+
+    for (String key : lsCarMap.keySet()) {
+      Car car = lsCarMap.get(key);
+
       System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
           car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
     }
