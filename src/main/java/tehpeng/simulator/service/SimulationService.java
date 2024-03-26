@@ -78,12 +78,12 @@ public class SimulationService {
     return inputCarName;
   }
 
-  public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY) {
+  public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY, String carName) {
     runNewScreen();
     String inputCarPosition = "";
     String[] inputCarPositionSplit = null;
     while (true) {
-      System.out.println("Please enter initial Position of car A in x y Direction format:");
+      System.out.println("Please enter initial Position of car " + carName + " in x y Direction format:");
       inputCarPosition = scanner.nextLine();
       inputCarPositionSplit = inputCarPosition.split(" ");
 
@@ -144,46 +144,59 @@ public class SimulationService {
     boolean result = false;
 
     if (lsCar.size() > 0) {
-      for (Car car : lsCar) {
-        List<Character> lsCommand = car.getCommands();
+      boolean next = true;
+      int currCommand = 0;
+      while (next) {
+        System.out.println(currCommand + "========");
+        // move car
+        for (Car car : lsCar) {
+          car.setCurrCommand(currCommand);
+          nextMove(car, currCommand, inputBoundaryX, inputBoundaryY);
+          System.out.println(car.toString());
+        }
 
-        for (int index = 0; index < lsCommand.size(); index++) {
-          char currCommand = lsCommand.get(index);
-          if (currCommand == 'F') {
-            // move forward
-            int currDirection = car.getCurrDirection();
-            int currDirectionIndex = currDirection % 2;
-            if (currDirection > 1) {
-              // moving south or west (-1)
-              if (currDirectionIndex == 0) {
-                car.minusCurrCoordinateY();
-              } else {
-                car.minusCurrCoordinateX();
+        // check car for collision
+        for (int car1Index = 0; car1Index < lsCar.size(); car1Index++) {
+          Car car1 = lsCar.get(car1Index);
+
+          for (int car2Index = car1Index + 1; car2Index < lsCar.size(); car2Index++) {
+            Car car2 = lsCar.get(car2Index);
+
+            // check if car1 and car2 have same coordinate
+            boolean collided = MapUtil.checkCollision(car1, car2);
+            if (collided) {
+              // stop the car
+              // check if car1 or car2 already got collided and is in the current move
+              if (car1.getCollisionWith().size() == 0) {
+                car1.addCollision(car2.getName());
+                car1.setCompleted();
               }
-            } else {
-              // moving north or east (+1)
-              if (currDirectionIndex == 0) {
-                car.plusCurrCoordinateY(inputBoundaryY);
-              } else {
-                car.plusCurrCoordinateX(inputBoundaryX);
+              if (car2.getCollisionWith().size() == 0) {
+                car2.addCollision(car1.getName());
+                car2.setCompleted();
               }
             }
-          } else if ((currCommand == 'R') || (currCommand == 'L')) {
-            // move direction
-            // TODO: move to another method
-            int newDirection = 9;
-            if (currCommand == 'R') {
-              newDirection = (car.getCurrDirection() + 1) % 4;
-            } else if (currCommand == 'L') {
-              newDirection = (car.getCurrDirection() - 1) % 4;
-            }
-
-            car.setCurrDirection(newDirection);
           }
         }
-      }
 
-      result = true;
+        // check if all the cars collided or command ended
+        Set<String> lsCompleted = new HashSet<>(); // if same value is added it will be ignored
+        for (Car car : lsCar) {
+          if (car.isCompleted()) {
+            lsCompleted.add("true");
+          } else {
+            lsCompleted.add("false");
+          }
+        }
+
+        Iterator<String> lsCompletedIterator = lsCompleted.iterator();
+        if ((lsCompleted.size() == 1) && lsCompletedIterator.next().equals("true")) {
+          // completed the simulation
+          break;
+        }
+
+        currCommand++;
+      }
     } else {
       // show error before prompt again
       System.out.println("=ERROR=====================================================================");
@@ -193,7 +206,58 @@ public class SimulationService {
       result = false;
     }
 
+    result = true;
+
+    for (Car car : lsCar) {
+      System.out.println(car.toString());
+    }
+
     return result;
+  }
+
+  private void nextMove(Car car, int index, int inputBoundaryX, int inputBoundaryY) {
+    if ((car.getCollisionWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())) {
+      // car not collided and car still have command
+      char currCommand = car.getCommands().get(index);
+      if (currCommand == 'F') {
+        // move forward
+        int currDirection = car.getCurrDirection();
+        int currDirectionIndex = currDirection % 2;
+        if (currDirection > 1) {
+          // moving south or west (-1)
+          if (currDirectionIndex == 0) {
+            car.minusCurrCoordinateY();
+          } else {
+            car.minusCurrCoordinateX();
+          }
+        } else {
+          // moving north or east (+1)
+          if (currDirectionIndex == 0) {
+            car.plusCurrCoordinateY(inputBoundaryY);
+          } else {
+            car.plusCurrCoordinateX(inputBoundaryX);
+          }
+        }
+      } else if ((currCommand == 'R') || (currCommand == 'L')) {
+        // move direction
+        // TODO: move to another method
+        int newDirection = 9;
+        // +4 to handle -1
+        if (currCommand == 'R') {
+          newDirection = (car.getCurrDirection() + 1 + 4) % 4;
+        } else if (currCommand == 'L') {
+          newDirection = (car.getCurrDirection() - 1 + 4) % 4;
+        }
+
+        car.setCurrDirection(newDirection);
+        car.setCurrCommand(index);
+      }
+
+      // check if the car still have any more command?
+      if (car.getCurrCommand() == (car.getCommands().size() - 1)) {
+        car.setCompleted();
+      }
+    }
   }
 
   public void runSimulationResult(List<Car> lsCar) {

@@ -1,5 +1,7 @@
 package tehpeng.simulator.util;
 
+import tehpeng.simulator.model.Car;
+
 public class MapUtil {
   // based on x, y convert to coordinate
   public static Integer[] convertCoordinate(int x, int y, int maxX, int maxY) {
@@ -45,5 +47,15 @@ public class MapUtil {
 
     // 9 refers to error
     return 'X';
+  }
+
+  public static boolean checkCollision(Car car1, Car car2) {
+    Integer[] car1Coordinate = car1.getCurrCoordinate();
+    Integer[] car2Coordinate = car2.getCurrCoordinate();
+    if ((car1Coordinate[0] == car2Coordinate[0]) && (car1Coordinate[1] == car2Coordinate[1])) {
+      return true;
+    }
+
+    return false;
   }
 }

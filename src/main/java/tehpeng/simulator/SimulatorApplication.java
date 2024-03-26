@@ -32,7 +32,8 @@ public class SimulatorApplication {
         String inputCarName = simulationService.runInputCarName(scanner);
 
         // Step 4: Request for car current position
-        String[] inputCarPositionSplit = simulationService.runInputCarPosition(scanner, inputBoundaryX, inputBoundaryY);
+        String[] inputCarPositionSplit = simulationService.runInputCarPosition(scanner, inputBoundaryX, inputBoundaryY,
+            inputCarName);
         inputCarPositionSplitX = Integer.parseInt(inputCarPositionSplit[0]);
         inputCarPositionSplitY = Integer.parseInt(inputCarPositionSplit[1]);
         inputCarPositionSplitDirection = inputCarPositionSplit[2];
