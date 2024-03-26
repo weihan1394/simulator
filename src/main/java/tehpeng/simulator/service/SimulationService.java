@@ -75,7 +75,7 @@ public class SimulationService {
       System.out.println("============================\n");
     }
 
-    return inputCarName;
+    return inputCarName.trim();
   }
 
   public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY, String carName) {
@@ -151,14 +151,12 @@ public class SimulationService {
         // move car
         HashMap<String, List<String>> coordinateMap = new HashMap<>();
 
+        // move car for one step
         for (String key : lsCarMap.keySet()) {
           Car car = lsCarMap.get(key);
-          // move car one command
           nextMove(car, currCommand, inputBoundaryX, inputBoundaryY);
 
           String coordString = Arrays.toString(car.getCurrCoordinate());
-          // String.join(", ",
-          // Arrays.asList(car.getCurrCoordinate()).stream().map(Object::toString).toArray(String[]::new));
           if (!coordinateMap.containsKey(coordString)) {
             // new coordinate; add the coordinate and the index (car)
             List<String> indexList = new ArrayList<>();
@@ -187,10 +185,12 @@ public class SimulationService {
               Car currCarCollided = lsCarMap.get(carCollidedName);
 
               if (currCarCollided.getCollisionWith().size() == 0) {
+                // initalize a new list
                 List<String> lsCurrCarCollided = new ArrayList<>();
                 lsCurrCarCollided.addAll(lsCarCollided);
-                lsCurrCarCollided.remove(currCarCollided.getName());
+                lsCurrCarCollided.remove(currCarCollided.getName()); // remove curent car
                 currCarCollided.setCollisionWith(lsCurrCarCollided);
+
                 // collided; means the car wont move anymore
                 currCarCollided.setCompleted();
               }
@@ -228,11 +228,11 @@ public class SimulationService {
 
     result = true;
 
-    System.out.println("DONEDONEDONEDONEDONEDONEDONE");
-    for (String key : lsCarMap.keySet()) {
-      Car car = lsCarMap.get(key);
-      System.out.println(car.toString());
-    }
+    // System.out.println("DONEDONEDONEDONEDONEDONEDONE");
+    // for (String key : lsCarMap.keySet()) {
+    // Car car = lsCarMap.get(key);
+    // System.out.println(car.toString());
+    // }
 
     return result;
   }
@@ -333,8 +333,14 @@ public class SimulationService {
     for (String key : lsCarMap.keySet()) {
       Car car = lsCarMap.get(key);
 
-      System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
-          car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+      if (car.getCollisionWith().size() == 0) {
+        System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
+            car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+      } else {
+        System.out.println("- " + car.getName() + ", collides with " + String.join(", ", car.getCollisionWith())
+            + " at (" + car.getCurrCoordinate()[1] + "," + car.getCurrCoordinate()[0] + ") at step "
+            + (car.getCurrCommand() + 1));
+      }
     }
   }
 
