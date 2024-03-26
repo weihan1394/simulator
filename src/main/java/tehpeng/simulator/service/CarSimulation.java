@@ -3,18 +3,121 @@ package tehpeng.simulator.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import tehpeng.simulator.model.Car;
 
 public class CarSimulation {
-  public HashMap<String, List<String>> moveStep(HashMap<String, Car> lsCarMap, int currCommand, int inputBoundaryX,
-      int inputBoundaryY) {
-    // move car for one step
-    HashMap<String, List<String>> coordinateMap = new HashMap<>();
+
+  private HashMap<String, Car> lsCarMap;
+  private int inputBoundaryX;
+  private int inputBoundaryY;
+
+  public CarSimulation(HashMap<String, Car> lsCarMap, int inputBoundaryX, int inputBoundaryY) {
+    this.lsCarMap = lsCarMap;
+    this.inputBoundaryX = inputBoundaryX;
+    this.inputBoundaryY = inputBoundaryY;
+  }
+
+  private void validateCollision(HashMap<String, List<String>> coordinateMap) {
+    // coordinateMap to see if there is any coordinate that have more than one car
+    for (String key : coordinateMap.keySet()) {
+      List<String> lsCarCollided = coordinateMap.get(key);
+
+      // more than one car collided
+      if (lsCarCollided.size() > 1) {
+        // check if the car already collided before
+        // yes: ignore
+        // no: set collided = true, remove ownself
+
+        for (String carCollidedName : lsCarCollided) {
+          Car currCarCollided = lsCarMap.get(carCollidedName);
+
+          if (currCarCollided.getCollisionWith().size() == 0) {
+            // initalize a new list
+            List<String> lsCurrCarCollided = new ArrayList<>();
+            lsCurrCarCollided.addAll(lsCarCollided);
+            lsCurrCarCollided.remove(currCarCollided.getName()); // remove curent car
+            currCarCollided.setCollisionWith(lsCurrCarCollided);
+
+            // collided; means the car wont move anymore
+            currCarCollided.setCompleted();
+          }
+        }
+      }
+    }
+  }
+
+  public boolean hasNextStep() {
+    // check if all the cars collided or command ended
+    Set<String> lsCompleted = new HashSet<>(); // if same value is added it will be ignored
     for (String key : lsCarMap.keySet()) {
       Car car = lsCarMap.get(key);
-      nextMove(car, currCommand, inputBoundaryX, inputBoundaryY);
+      if (!car.isCompleted()) {
+        return true;
+      }
+    }
+
+    return false;
+
+    // Iterator<String> lsCompletedIterator = lsCompleted.iterator();
+    // if ((lsCompleted.size() == 1) && lsCompletedIterator.next().equals("true")) {
+    // // completed the simulation
+    // break;
+    // }
+  }
+
+  public void nextMove(int index) {
+    HashMap<String, List<String>> coordinateMap = new HashMap<>();
+
+    for (String key : lsCarMap.keySet()) {
+      Car car = lsCarMap.get(key);
+      if ((car.getCollisionWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())
+          && (car.isCompleted() == false)) {
+        // set current command
+        car.setCurrCommand(index);
+        // car not collided and car still have command
+        char currCommand = car.getCommands().get(index);
+        if (currCommand == 'F') {
+          // move forward
+          int currDirection = car.getCurrDirection();
+          int currDirectionIndex = currDirection % 2;
+          if (currDirection > 1) {
+            // moving south or west (-1)
+            if (currDirectionIndex == 0) {
+              car.minusCurrCoordinateY();
+            } else {
+              car.minusCurrCoordinateX();
+            }
+          } else {
+            // moving north or east (+1)
+            if (currDirectionIndex == 0) {
+              car.plusCurrCoordinateY(inputBoundaryY);
+            } else {
+              car.plusCurrCoordinateX(inputBoundaryX);
+            }
+          }
+        } else if ((currCommand == 'R') || (currCommand == 'L')) {
+          // move direction
+          // TODO: move to another method
+          int newDirection = 9;
+          // +4 to handle -1
+          if (currCommand == 'R') {
+            newDirection = (car.getCurrDirection() + 1 + 4) % 4;
+          } else if (currCommand == 'L') {
+            newDirection = (car.getCurrDirection() - 1 + 4) % 4;
+          }
+
+          car.setCurrDirection(newDirection);
+        }
+
+        // check if the car still have any more command?
+        if (car.getCurrCommand() == (car.getCommands().size() - 1)) {
+          car.setCompleted();
+        }
+      }
 
       String coordString = Arrays.toString(car.getCurrCoordinate());
       if (!coordinateMap.containsKey(coordString)) {
@@ -27,55 +130,8 @@ public class CarSimulation {
         List<String> indexList = coordinateMap.get(coordString);
         indexList.add(car.getName());
       }
-
-      System.out.println(car.toString());
     }
-    return coordinateMap;
-  }
 
-  private void nextMove(Car car, int index, int inputBoundaryX, int inputBoundaryY) {
-    if ((car.getCollisionWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())) {
-      // set current command
-      car.setCurrCommand(index);
-      // car not collided and car still have command
-      char currCommand = car.getCommands().get(index);
-      if (currCommand == 'F') {
-        // move forward
-        int currDirection = car.getCurrDirection();
-        int currDirectionIndex = currDirection % 2;
-        if (currDirection > 1) {
-          // moving south or west (-1)
-          if (currDirectionIndex == 0) {
-            car.minusCurrCoordinateY();
-          } else {
-            car.minusCurrCoordinateX();
-          }
-        } else {
-          // moving north or east (+1)
-          if (currDirectionIndex == 0) {
-            car.plusCurrCoordinateY(inputBoundaryY);
-          } else {
-            car.plusCurrCoordinateX(inputBoundaryX);
-          }
-        }
-      } else if ((currCommand == 'R') || (currCommand == 'L')) {
-        // move direction
-        // TODO: move to another method
-        int newDirection = 9;
-        // +4 to handle -1
-        if (currCommand == 'R') {
-          newDirection = (car.getCurrDirection() + 1 + 4) % 4;
-        } else if (currCommand == 'L') {
-          newDirection = (car.getCurrDirection() - 1 + 4) % 4;
-        }
-
-        car.setCurrDirection(newDirection);
-      }
-
-      // check if the car still have any more command?
-      if (car.getCurrCommand() == (car.getCommands().size() - 1)) {
-        car.setCompleted();
-      }
-    }
+    validateCollision(coordinateMap);
   }
 }
