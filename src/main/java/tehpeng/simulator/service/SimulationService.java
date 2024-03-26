@@ -149,6 +149,7 @@ public class SimulationService {
       while (next) {
         System.out.println(currCommand + "###");
         // move car
+        CarSimulation carSimulation = new CarSimulation();
         HashMap<String, List<String>> coordinateMap = new HashMap<>();
 
         // move car for one step
@@ -238,7 +239,8 @@ public class SimulationService {
   }
 
   private void nextMove(Car car, int index, int inputBoundaryX, int inputBoundaryY) {
-    if ((car.getCollisionWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())) {
+    if ((car.getCollisionWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())
+        && (car.isCompleted() == false)) {
       // set current command
       car.setCurrCommand(index);
       // car not collided and car still have command

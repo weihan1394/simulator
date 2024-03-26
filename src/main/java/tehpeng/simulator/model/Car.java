@@ -20,6 +20,8 @@ public class Car {
   // private Map<String, Integer> lsCollisionWith;
   private List<String> collisionWith;
 
+  private boolean completed;
+
   public List<String> getCollisionWith() {
     return collisionWith;
   }
@@ -27,8 +29,6 @@ public class Car {
   public void setCollisionWith(List<String> collisionWith) {
     this.collisionWith = collisionWith;
   }
-
-  private boolean completed;
 
   // Constructor
   public Car(String name, int x, int y, int maxX, int maxY, int direction, String command) {
@@ -157,6 +157,7 @@ public class Car {
         ", currDirection=" + currDirection +
         ", currCommand=" + currCommand +
         ", lsCollisionWith=" + collisionWith +
+        ", completed=" + completed +
         '}';
   }
 }
