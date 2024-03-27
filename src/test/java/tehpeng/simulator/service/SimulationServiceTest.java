@@ -349,16 +349,17 @@ public class SimulationServiceTest {
   }
 
   @Test
-  void runDisplayCarDetailsScreenAfterSimulation_ValidInput_PrintsCorrectOutput() {
+  void givenTwoCarsCollide_runDisplayCarDetailsScreenAfterSimulation_PrintCorrectOutput() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("TestCar", 1, 2, 0, "FRL");
+    Car car1 = new Car("A", 1, 2, 0, "FRL");
     car1.setCurrCoordinate(new Integer[] { 3, 4 });
     car1.setCurrDirection(0);
-    Car car2 = new Car("car2", 1, 2, 0, "FRL");
+    car1.setCollideWith(List.of("B"));
+    Car car2 = new Car("B", 1, 2, 0, "FRL");
     car2.setCurrCoordinate(new Integer[] { 5, 6 });
     car2.setCurrDirection(2);
-    car2.setCollideWith(List.of("Car3"));
+    car2.setCollideWith(List.of("A"));
     lsCarMap.put("Car1", car1);
     lsCarMap.put("Car2", car2);
     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -369,15 +370,23 @@ public class SimulationServiceTest {
     simulationService.runSimulationResult(lsCarMap);
 
     // Assert
-    assertTrue(outContent.toString().contains("Your current list of cars are:"));
-    assertTrue(outContent.toString().contains("After simulation, the result is:"));
+    assertEquals("Your current list of cars are:\n" +
+        "- B, (1,2) N, [F, R, L]\n" +
+        "- A, (1,2) N, [F, R, L]\n" +
+        "After simulation, the result is:\n" +
+        "- B, collides with A at (6,5) at step 1\n" +
+        "- A, collides with B at (4,3) at step 1\n", outContent.toString());
   }
 
   @Test
-  void runSimulationResult_CallsDisplayMethods() {
+  void givenOneCar_runDisplayCarDetailsScreenAfterSimulation_PrintCorrectOutput() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    lsCarMap.put("Car1", new Car("Car1", 0, 0, 0, "FF"));
+    Car car = new Car("A", 1, 2, 0, "FFRFFFFRRL");
+    car.setCurrCommand(10);
+    car.setCurrCoordinate(new Integer[] { 5, 4 });
+    car.setCurrDirection(2);
+    lsCarMap.put(car.getName(), car);
     SimulationService simulationService = new SimulationService();
     ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     System.setOut(new PrintStream(outContent));
@@ -386,12 +395,14 @@ public class SimulationServiceTest {
     simulationService.runSimulationResult(lsCarMap);
 
     // Assert
-    assertTrue(outContent.toString().contains("Your current list of cars are:"));
-    assertTrue(outContent.toString().contains("After simulation, the result is:"));
+    assertEquals("Your current list of cars are:\n" +
+        "- A, (1,2) N, [F, F, R, F, F, F, F, R, R, L]\n" +
+        "After simulation, the result is:\n" +
+        "- A, (4,5) S\n", outContent.toString());
   }
 
   @Test
-  void runInputEndingOption_ValidOption_ReturnsOption() {
+  void givenValidOption_whenrunInputEndingOption_ReturnOption() {
     // Given
     String simulatedUserInput = "1\n";
     InputStream inputStream = new ByteArrayInputStream(simulatedUserInput.getBytes());
@@ -409,7 +420,7 @@ public class SimulationServiceTest {
   }
 
   @Test
-  void runInputEndingOption_InvalidOption_ReturnsOption() {
+  void givenInvalidOption_whenrunInputEndingOption_PrintErrorMessageAndRetry() {
     // Given
     String simulatedUserInput = "3\n2\n";
     InputStream inputStream = new ByteArrayInputStream(simulatedUserInput.getBytes());
@@ -424,13 +435,21 @@ public class SimulationServiceTest {
 
     // Assert
     assertEquals("2", inputEndingOption);
-    assertTrue(outputStream.toString().contains("=ERROR================================================="));
-    assertTrue(outputStream.toString().contains("You have entered a wrong option."));
-    assertTrue(outputStream.toString().contains("Please choose a correct option of 1 or 2"));
+    assertEquals("\n\n\n" +
+        "Please choose from the following options:\n" +
+        "[1] Start Over\n" +
+        "[2] Exit\n" +
+        "=ERROR=================================================\n" +
+        "You have entered a wrong option. Selected option: 3\n" +
+        "Please choose a correct option of 1 or 2\n" +
+        "=======================================================\n\n" +
+        "Please choose from the following options:\n" +
+        "[1] Start Over\n" +
+        "[2] Exit\n", outputStream.toString());
   }
 
   @Test
-  void runExitScreen_PrintsExitMessage() {
+  void givenVoid_whenrunExitScreen_PrintExitMessage() {
     // Given
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     System.setOut(new PrintStream(outputStream));
@@ -440,6 +459,7 @@ public class SimulationServiceTest {
     simulationService.runExitScreen();
 
     // Assert
-    assertEquals("\n\n\nThank you for running the simulation. Goodbye!\n", outputStream.toString());
+    assertEquals("\n\n\n" +
+        "Thank you for running the simulation. Goodbye!\n", outputStream.toString());
   }
 }

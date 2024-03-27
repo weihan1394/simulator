@@ -254,4 +254,6 @@ public class SimulatorApplicationTest {
   }
 
   // TODO: add test case A B collide then C collide after that
+
+  // TODO: add test case A B collide then C continue to completion after that
 }
