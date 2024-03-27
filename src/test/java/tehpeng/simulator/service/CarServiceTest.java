@@ -112,11 +112,11 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
+    carService.nextMove(0);
 
     // Assert
-    assertFalse(car1.getCompleted()); // car1 should be marked as completed
-    assertFalse(car2.getCompleted()); // car2 should be marked as completed
+    assertFalse(car1.getCompleted()); // car1 should be marked as not completed
+    assertFalse(car2.getCompleted()); // car2 should be marked as not completed
     assertEquals(car1.getCollideWith().size(), 0); // car1 no collision
     assertEquals(car2.getCollideWith().size(), 0); // car2 no collision
   }

@@ -145,14 +145,10 @@ public class SimulationService {
     if (lsCarMap.size() > 0) {
       int currCommand = 0;
       CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
+      // start simulation
       while (carSimulation.hasNextStep()) {
-        // start simulation
-
         // move car
         carSimulation.nextMove(currCommand);
-        if (!carSimulation.hasNextStep()) {
-          break;
-        }
 
         currCommand++;
       }
