@@ -17,18 +17,10 @@ public class Car {
   private Integer[] currCoordinate; // [south, west] [y, x]
   private int currDirection; // N:0 E:1 S:2 W:3
   private int currCommand;
-  // private Map<String, Integer> lsCollisionWith;
-  private List<String> collisionWith;
 
+  // result
+  private List<String> collideWith;
   private boolean completed;
-
-  public List<String> getCollisionWith() {
-    return collisionWith;
-  }
-
-  public void setCollisionWith(List<String> collisionWith) {
-    this.collisionWith = collisionWith;
-  }
 
   // Constructor
   public Car(String name, int x, int y, int maxX, int maxY, int direction, String command) {
@@ -44,12 +36,11 @@ public class Car {
     this.currCoordinate[1] = this.coordinate[1];
     this.currDirection = direction;
     this.currCommand = 0;
-    // this.lsCollisionWith = new HashMap<>();
-    this.collisionWith = new ArrayList<>();
+    this.collideWith = new ArrayList<>();
     this.completed = false;
   }
 
-  public boolean isCompleted() {
+  public boolean getCompleted() {
     return completed;
   }
 
@@ -59,22 +50,6 @@ public class Car {
 
   public void setCurrCommand(int currCommand) {
     this.currCommand = currCommand;
-  }
-
-  // public void setLsCollisionWith(Map<String, Integer> lsCollisionWith) {
-  // this.lsCollisionWith = lsCollisionWith;
-  // }
-
-  // public Map<String, Integer> getCollisionWith() {
-  // return lsCollisionWith;
-  // }
-
-  public void resetSimulation() {
-    this.currCoordinate[0] = this.coordinate[0];
-    this.currCoordinate[1] = this.coordinate[1];
-    this.currDirection = this.direction;
-
-    this.currCommand = 0;
   }
 
   public String getName() {
@@ -109,6 +84,18 @@ public class Car {
     this.currDirection = newCurrDirection;
   }
 
+  public int getCurrCommand() {
+    return currCommand;
+  }
+
+  public List<String> getCollideWith() {
+    return collideWith;
+  }
+
+  public void setCollideWith(List<String> collisionWith) {
+    this.collideWith = collisionWith;
+  }
+
   public void plusCurrCoordinateY(int maxY) {
     int currY = this.currCoordinate[0];
     if (currY < (maxY - 1)) {
@@ -137,18 +124,10 @@ public class Car {
     }
   }
 
-  public int getCurrCommand() {
-    return currCommand;
-  }
-
-  // public void addCollision(String carName) {
-  // lsCollisionWith.put(carName, currCommand);
-  // }
-
   // toString method
   @Override
   public String toString() {
-    return "Car {" +
+    return "Car{" +
         "name='" + name + '\'' +
         ", coordinate=" + Arrays.toString(coordinate) +
         ", direction=" + direction +
@@ -156,7 +135,7 @@ public class Car {
         ", currCoordinate=" + Arrays.toString(currCoordinate) +
         ", currDirection=" + currDirection +
         ", currCommand=" + currCommand +
-        ", lsCollisionWith=" + collisionWith +
+        ", collideWith=" + collideWith +
         ", completed=" + completed +
         '}';
   }

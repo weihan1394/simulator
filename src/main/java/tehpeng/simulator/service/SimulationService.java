@@ -40,7 +40,7 @@ public class SimulationService {
     }
 
     while (true) {
-      System.out.println("Please choose from the following options: ");
+      System.out.println("Please choose from the following options:");
       System.out.println("[1] Add a car to the field");
       System.out.println("[2] Run simulation");
       inputOption = scanner.nextLine();
@@ -147,39 +147,16 @@ public class SimulationService {
       boolean next = true;
       int currCommand = 0;
       while (next) {
-        System.out.println(currCommand + "###");
+        // start simulation
+        CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
+
         // move car
-        CarSimulation carSimulation = new CarSimulation(lsCarMap, inputBoundaryX, inputBoundaryY);
-        // HashMap<String, List<String>> coordinateMap = new HashMap<>();
-
-        // move car for one step
         carSimulation.nextMove(currCommand);
-        // System.out.println(car.toString());
-
-        // // check if all the cars collided or command ended
-        // Set<String> lsCompleted = new HashSet<>(); // if same value is added it will
-        // be ignored
-        // for (String key : lsCarMap.keySet()) {
-        // Car car = lsCarMap.get(key);
-        // if (car.isCompleted()) {
-        // lsCompleted.add("true");
-        // } else {
-        // lsCompleted.add("false");
-        // }
-        // }
-
-        // Iterator<String> lsCompletedIterator = lsCompleted.iterator();
-        // if ((lsCompleted.size() == 1) && lsCompletedIterator.next().equals("true")) {
-        // // completed the simulation
-        // break;
-        // }
-
         if (!carSimulation.hasNextStep()) {
           break;
         }
 
         currCommand++;
-
       }
     } else {
       // show error before prompt again
@@ -187,18 +164,10 @@ public class SimulationService {
       System.out.println("There is no car to run for simulation. Please choose option 1 to add a car.");
       System.out.println("===========================================================================\n");
 
-      result = false;
+      return false;
     }
 
-    result = true;
-
-    // System.out.println("DONEDONEDONEDONEDONEDONEDONE");
-    // for (String key : lsCarMap.keySet()) {
-    // Car car = lsCarMap.get(key);
-    // System.out.println(car.toString());
-    // }
-
-    return result;
+    return true;
   }
 
   public void runSimulationResult(HashMap<String, Car> lsCarMap) {
@@ -236,7 +205,7 @@ public class SimulationService {
   }
 
   private void runDisplayCarDetailsScreen(HashMap<String, Car> lsCarMap) {
-    System.out.println("Your current list of cars are: ");
+    System.out.println("Your current list of cars are:");
 
     for (String key : lsCarMap.keySet()) {
       Car car = lsCarMap.get(key);
@@ -251,11 +220,11 @@ public class SimulationService {
     for (String key : lsCarMap.keySet()) {
       Car car = lsCarMap.get(key);
 
-      if (car.getCollisionWith().size() == 0) {
+      if (car.getCollideWith().size() == 0) {
         System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
             car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
       } else {
-        System.out.println("- " + car.getName() + ", collides with " + String.join(", ", car.getCollisionWith())
+        System.out.println("- " + car.getName() + ", collides with " + String.join(", ", car.getCollideWith())
             + " at (" + car.getCurrCoordinate()[1] + "," + car.getCurrCoordinate()[0] + ") at step "
             + (car.getCurrCommand() + 1));
       }
