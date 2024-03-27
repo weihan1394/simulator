@@ -253,4 +253,5 @@ public class SimulatorApplicationTest {
     assertEquals(expectedOutput, outputStream.toString());
   }
 
+  // TODO: add test case A B collide then C collide after that
 }
