@@ -334,7 +334,7 @@ public class SimulationServiceTest {
   }
 
   @Test
-  public void givenValidBoundary_whenrunInputBoundary_ReturnValidArray() {
+  void givenValidBoundary_whenrunInputBoundary_ReturnValidArray() {
     // Simulate user input
     String userInput = "10 10";
     Scanner mockScanner = new Scanner(userInput);

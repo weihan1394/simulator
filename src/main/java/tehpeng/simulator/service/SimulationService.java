@@ -143,14 +143,11 @@ public class SimulationService {
     runNewScreen();
 
     if (lsCarMap.size() > 0) {
-      int currCommand = 0;
       CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
       // start simulation
       while (carSimulation.hasNextStep()) {
         // move car
-        carSimulation.nextMove(currCommand);
-
-        currCommand++;
+        carSimulation.nextMove();
       }
     } else {
       // show error before prompt again

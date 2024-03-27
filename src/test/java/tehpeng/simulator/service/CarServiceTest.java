@@ -52,7 +52,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
+    carService.nextMove(); // Both cars move to the same coordinate
 
     // Assert
     assertTrue(car1.getCompleted()); // car1 should be marked as completed
@@ -72,7 +72,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
+    carService.nextMove(); // Both cars move to the same coordinate
 
     // Assert
     assertTrue(car1.getCompleted()); // car1 should be marked as completed
@@ -92,7 +92,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
+    carService.nextMove(); // Both cars move to the same coordinate
 
     // Assert
     assertTrue(car1.getCompleted()); // car1 should be marked as completed
@@ -112,7 +112,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0);
+    carService.nextMove();
 
     // Assert
     assertFalse(car1.getCompleted()); // car1 should be marked as not completed
@@ -130,7 +130,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(3, car.getCurrCoordinate()[0]); // Coordinate y should increase by 1
@@ -148,7 +148,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(1, car.getCurrCoordinate()[0]); // Coordinate y should decrease by 1
@@ -165,7 +165,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
@@ -183,7 +183,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
@@ -200,7 +200,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
@@ -217,7 +217,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
@@ -234,7 +234,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Turn car right
+    carService.nextMove(); // Turn car right
 
     // Assert
     assertEquals(1, car.getCurrDirection()); // Direction should change from north (0) to east (1)
@@ -249,7 +249,7 @@ public class CarServiceTest {
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Turn car left
+    carService.nextMove(); // Turn car left
 
     // Assert
     assertEquals(0, car.getCurrDirection()); // Direction should change from east (1) to north (0)
