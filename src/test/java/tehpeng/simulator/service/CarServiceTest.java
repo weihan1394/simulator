@@ -15,7 +15,7 @@ public class CarServiceTest {
   void hasNextStep_CarNotCompleted_ReturnsTrue() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    lsCarMap.put("car1", new Car("car1", 0, 0, 5, 5, 0, "F"));
+    lsCarMap.put("car1", new Car("car1", 0, 0, 0, "F"));
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
@@ -29,7 +29,7 @@ public class CarServiceTest {
   void hasNextStep_CarCompleted_ReturnFalse() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 0, 0, 5, 5, 0, "F");
+    Car car = new Car("car1", 0, 0, 0, "F");
     car.setCompleted();
     lsCarMap.put(car.getName(), car);
     CarService carService = new CarService(lsCarMap, 5, 5);
@@ -45,8 +45,8 @@ public class CarServiceTest {
   void validateCollision_MultipleCarsCollideForward_CorrectlyHandled() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 0, 0, 5, 5, 0, "F");
-    Car car2 = new Car("car2", 0, 0, 5, 5, 0, "F");
+    Car car1 = new Car("car1", 0, 0, 0, "F");
+    Car car2 = new Car("car2", 0, 0, 0, "F");
     lsCarMap.put("car1", car1);
     lsCarMap.put("car2", car2);
     CarService carService = new CarService(lsCarMap, 5, 5);
@@ -65,8 +65,8 @@ public class CarServiceTest {
   void validateCollision_MultipleCarsCollideDirectionR_CorrectlyHandled() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 0, 0, 5, 5, 0, "R");
-    Car car2 = new Car("car2", 0, 0, 5, 5, 0, "R");
+    Car car1 = new Car("car1", 0, 0, 0, "R");
+    Car car2 = new Car("car2", 0, 0, 0, "R");
     lsCarMap.put("car1", car1);
     lsCarMap.put("car2", car2);
     CarService carService = new CarService(lsCarMap, 5, 5);
@@ -85,8 +85,8 @@ public class CarServiceTest {
   void validateCollision_MultipleCarsCollideDirectionL_CorrectlyHandled() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 0, 0, 5, 5, 0, "L");
-    Car car2 = new Car("car2", 0, 0, 5, 5, 0, "L");
+    Car car1 = new Car("car1", 0, 0, 0, "L");
+    Car car2 = new Car("car2", 0, 0, 0, "L");
     lsCarMap.put("car1", car1);
     lsCarMap.put("car2", car2);
     CarService carService = new CarService(lsCarMap, 5, 5);
@@ -105,8 +105,8 @@ public class CarServiceTest {
   void validateCollision_MultipleCarsNoCollision_CorrectlyHandled() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 1, 1, 5, 5, 0, "FL");
-    Car car2 = new Car("car2", 2, 2, 5, 5, 1, "FL");
+    Car car1 = new Car("car1", 1, 1, 0, "FL");
+    Car car2 = new Car("car2", 2, 2, 1, "FL");
     lsCarMap.put("car1", car1);
     lsCarMap.put("car2", car2);
     CarService carService = new CarService(lsCarMap, 5, 5);
@@ -125,7 +125,7 @@ public class CarServiceTest {
   void moveCarForward_MoveForwardNorth_CorrectCoordinatesUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 0, "F");
+    Car car = new Car("car1", 2, 2, 0, "F");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -142,7 +142,7 @@ public class CarServiceTest {
   void moveCarForward_MoveForwardSouth_CorrectCoordinatesUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 2, "F");
+    Car car = new Car("car1", 2, 2, 2, "F");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -159,7 +159,7 @@ public class CarServiceTest {
   void moveCarForward_MoveForwardEast_CorrectCoordinatesUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 1, "F");
+    Car car = new Car("car1", 2, 2, 1, "F");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -177,7 +177,7 @@ public class CarServiceTest {
   void moveCarForward_MoveForwardWest_CorrectCoordinatesUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 3, "F");
+    Car car = new Car("car1", 2, 2, 3, "F");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -194,7 +194,7 @@ public class CarServiceTest {
   void moveCarForward_MoveRight_CorrectCoordinatesUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 3, "R");
+    Car car = new Car("car1", 2, 2, 3, "R");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -211,7 +211,7 @@ public class CarServiceTest {
   void moveCarForward_MoveLeft_CorrectCoordinatesUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 3, "L");
+    Car car = new Car("car1", 2, 2, 3, "L");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -228,7 +228,7 @@ public class CarServiceTest {
   void moveCarDirection_TurnRight_CorrectDirectionUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 0, "R");
+    Car car = new Car("car1", 2, 2, 0, "R");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -243,7 +243,7 @@ public class CarServiceTest {
   void moveCarDirection_TurnLeft_CorrectDirectionUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 1, "L");
+    Car car = new Car("car1", 2, 2, 1, "L");
     lsCarMap.put("car1", car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
