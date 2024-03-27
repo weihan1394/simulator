@@ -116,7 +116,7 @@ public class CarServiceTest {
 
     // Assert
     assertFalse(car1.getCompleted()); // car1 should be marked as not completed
-    assertFalse(car2.getCompleted()); // car2 should be marked as not completed
+    assertFalse(car2.getCompleted()); // car2 should be marked as notsour completed
     assertEquals(car1.getCollideWith().size(), 0); // car1 no collision
     assertEquals(car2.getCollideWith().size(), 0); // car2 no collision
   }
@@ -138,6 +138,7 @@ public class CarServiceTest {
     assertEquals(true, car.getCompleted()); // Car should be finish completed
   }
 
+  // TODO: assert the direction
   @Test
   void moveCarForward_MoveForwardSouth_CorrectCoordinatesUpdated() {
     // Given
@@ -225,7 +226,7 @@ public class CarServiceTest {
   }
 
   @Test
-  void moveCarDirection_TurnRight_CorrectDirectionUpdated() {
+  void moveCarDirection_MoveRight_CorrectDirectionUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
     Car car = new Car("car1", 2, 2, 0, "R");
@@ -240,7 +241,7 @@ public class CarServiceTest {
   }
 
   @Test
-  void moveCarDirection_TurnLeft_CorrectDirectionUpdated() {
+  void moveCarDirection_MoveLeft_CorrectDirectionUpdated() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
     Car car = new Car("car1", 2, 2, 1, "L");
