@@ -12,10 +12,10 @@ import tehpeng.simulator.model.Car;
 
 public class CarServiceTest {
   @Test
-  void hasNextStep_CarNotCompleted_ReturnsTrue() {
+  void givenCarHaveMoreCommands_whenhasNextStep_ReturnTrue() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    lsCarMap.put("car1", new Car("car1", 0, 0, 0, "F"));
+    lsCarMap.put("car1", new Car("A", 0, 0, 0, "FFRFFFFRRL"));
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
@@ -26,11 +26,14 @@ public class CarServiceTest {
   }
 
   @Test
-  void hasNextStep_CarCompleted_ReturnFalse() {
+  void givenCarHaveNoMoreCommands_whenhasNextStep_ReturnFalse() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 0, 0, 0, "F");
+    Car car = new Car("A", 0, 0, 0, "FFRFFFFRRL");
     car.setCompleted();
+    car.setCurrCoordinate(new Integer[] { 5, 4 });
+    car.setCurrCommand(9);
+    car.setCurrDirection(2);
     lsCarMap.put(car.getName(), car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
