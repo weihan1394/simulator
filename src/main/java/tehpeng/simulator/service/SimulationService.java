@@ -32,15 +32,15 @@ public class SimulationService {
     return inputBoundarySplit;
   }
 
-  public String runInputOption(Scanner scanner, List<Car> lsCar) {
+  public String runInputOption(Scanner scanner, HashMap<String, Car> lsCarMap) {
     runNewScreen();
     String inputOption = "";
-    if (lsCar.size() > 0) {
-      runDisplayCarDetailsScreen(lsCar);
+    if (lsCarMap.size() > 0) {
+      runDisplayCarDetailsScreen(lsCarMap);
     }
 
     while (true) {
-      System.out.println("Please choose from the following options: ");
+      System.out.println("Please choose from the following options:");
       System.out.println("[1] Add a car to the field");
       System.out.println("[2] Run simulation");
       inputOption = scanner.nextLine();
@@ -75,15 +75,15 @@ public class SimulationService {
       System.out.println("============================\n");
     }
 
-    return inputCarName;
+    return inputCarName.trim();
   }
 
-  public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY) {
+  public String[] runInputCarPosition(Scanner scanner, int inputBoundaryX, int inputBoundaryY, String carName) {
     runNewScreen();
     String inputCarPosition = "";
     String[] inputCarPositionSplit = null;
     while (true) {
-      System.out.println("Please enter initial Position of car A in x y Direction format:");
+      System.out.println("Please enter initial Position of car " + carName + " in x y Direction format:");
       inputCarPosition = scanner.nextLine();
       inputCarPositionSplit = inputCarPosition.split(" ");
 
@@ -139,66 +139,40 @@ public class SimulationService {
     return inputCommand;
   }
 
-  public boolean runSimulation(List<Car> lsCar, int inputBoundaryX, int inputBoundaryY) {
+  public boolean runSimulation(HashMap<String, Car> lsCarMap, int inputBoundaryX, int inputBoundaryY) {
     runNewScreen();
     boolean result = false;
 
-    if (lsCar.size() > 0) {
-      for (Car car : lsCar) {
-        List<Character> lsCommand = car.getCommands();
+    if (lsCarMap.size() > 0) {
+      boolean next = true;
+      int currCommand = 0;
+      while (next) {
+        // start simulation
+        CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
 
-        for (int index = 0; index < lsCommand.size(); index++) {
-          char currCommand = lsCommand.get(index);
-          if (currCommand == 'F') {
-            // move forward
-            int currDirection = car.getCurrDirection();
-            int currDirectionIndex = currDirection % 2;
-            if (currDirection > 1) {
-              // moving south or west (-1)
-              if (currDirectionIndex == 0) {
-                car.minusCurrCoordinateY();
-              } else {
-                car.minusCurrCoordinateX();
-              }
-            } else {
-              // moving north or east (+1)
-              if (currDirectionIndex == 0) {
-                car.plusCurrCoordinateY(inputBoundaryY);
-              } else {
-                car.plusCurrCoordinateX(inputBoundaryX);
-              }
-            }
-          } else if ((currCommand == 'R') || (currCommand == 'L')) {
-            // move direction
-            // TODO: move to another method
-            int newDirection = 9;
-            if (currCommand == 'R') {
-              newDirection = (car.getCurrDirection() + 1) % 4;
-            } else if (currCommand == 'L') {
-              newDirection = (car.getCurrDirection() - 1) % 4;
-            }
-
-            car.setCurrDirection(newDirection);
-          }
+        // move car
+        carSimulation.nextMove(currCommand);
+        if (!carSimulation.hasNextStep()) {
+          break;
         }
-      }
 
-      result = true;
+        currCommand++;
+      }
     } else {
       // show error before prompt again
       System.out.println("=ERROR=====================================================================");
       System.out.println("There is no car to run for simulation. Please choose option 1 to add a car.");
       System.out.println("===========================================================================\n");
 
-      result = false;
+      return false;
     }
 
-    return result;
+    return true;
   }
 
-  public void runSimulationResult(List<Car> lsCar) {
-    runDisplayCarDetailsScreen(lsCar);
-    runDisplayCarDetailsScreenAfterSimulation(lsCar);
+  public void runSimulationResult(HashMap<String, Car> lsCarMap) {
+    runDisplayCarDetailsScreen(lsCarMap);
+    runDisplayCarDetailsScreenAfterSimulation(lsCarMap);
   }
 
   public String runInputEndingOption(Scanner scanner) {
@@ -230,20 +204,30 @@ public class SimulationService {
     System.out.println("Thank you for running the simulation. Goodbye!");
   }
 
-  private void runDisplayCarDetailsScreen(List<Car> lsCar) {
-    System.out.println("Your current list of cars are: ");
-    for (Car car : lsCar) {
+  private void runDisplayCarDetailsScreen(HashMap<String, Car> lsCarMap) {
+    System.out.println("Your current list of cars are:");
+
+    for (String key : lsCarMap.keySet()) {
+      Car car = lsCarMap.get(key);
       System.out.println("- " + car.getName() + ", (" + car.getCoordinate()[1] + "," + car.getCoordinate()[0] +
           ") " + MapUtil.convertIndexToDirection(car.getDirection()) + ", " + car.getCommands());
     }
   }
 
-  private void runDisplayCarDetailsScreenAfterSimulation(List<Car> lsCar) {
+  private void runDisplayCarDetailsScreenAfterSimulation(HashMap<String, Car> lsCarMap) {
     System.out.println("After simulation, the result is:");
-    for (int index = 0; index < lsCar.size(); index++) {
-      Car car = lsCar.get(index);
-      System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
-          car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+
+    for (String key : lsCarMap.keySet()) {
+      Car car = lsCarMap.get(key);
+
+      if (car.getCollideWith().size() == 0) {
+        System.out.println("- " + car.getName() + ", (" + car.getCurrCoordinate()[1] + "," +
+            car.getCurrCoordinate()[0] + ") " + MapUtil.convertIndexToDirection(car.getCurrDirection()));
+      } else {
+        System.out.println("- " + car.getName() + ", collides with " + String.join(", ", car.getCollideWith())
+            + " at (" + car.getCurrCoordinate()[1] + "," + car.getCurrCoordinate()[0] + ") at step "
+            + (car.getCurrCommand() + 1));
+      }
     }
   }
 
