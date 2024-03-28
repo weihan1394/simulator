@@ -6,7 +6,7 @@ on:
       - feat/add-test
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,5 +26,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
       - name: Build and test with Maven
-        run: mvn clean install
+        run: mvn clean test
