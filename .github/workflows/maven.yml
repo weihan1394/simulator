@@ -93,6 +93,6 @@ jobs:
         - name: Build and push to dockerhub
           uses: docker/build-push-action@v4
           with:
-            file: ./Dockerfile
+            context: .
             push: true
             tags: weihan1394/simulator:${{ env.DATE }}
