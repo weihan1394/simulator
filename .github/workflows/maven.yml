@@ -71,22 +71,13 @@ jobs:
           with:
             name: Package
             path: staging
-
+            
+  # https://github.com/docker/build-push-action
   dockerize:
       runs-on: ubuntu-latest
       needs: [publish-job]
 
       steps:
-
-        # - name: Check out the repo
-        #   uses: actions/checkout@v4
-
-        # - name: Build docker image
-        #   run: |
-        #     ls -la
-        #     pwd
-        #     docker build . -t weihan1394/simulator:latest -f Dockerfile
-
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v3
           
@@ -106,4 +97,4 @@ jobs:
           uses: docker/build-push-action@v5
           with:
             push: true
-            tags: weihan1394/simulator:${{ env.DATE }}
+            tags: weihan1394/simulator:${{ env.DATE }}, weihan1394/simulator:latest
