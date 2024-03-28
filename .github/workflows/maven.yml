@@ -31,13 +31,14 @@ jobs:
       - name: Build
         run: mvn -DskipTests -B package --file pom.xml
 
+      # ignore fail test so that next stage can generate report
       - name: Test
         run: |
           mvn --batch-mode -Dmaven.test.failure.ignore=true test
           ls -la
           cd target
 
-      - name: Report
+      - name: Publish Test Results
         uses: dorny/test-reporter@v1
         if: always()
         with:
@@ -66,8 +67,17 @@ jobs:
         - run: mvn -B package --file pom.xml -DskipTests
         - run: mkdir staging && cp target/*.jar staging
 
-        - name: upload  build
+        - name: upload build
           uses: actions/upload-artifact@v1
           with:
             name: Package
             path: staging
+        
+        - name: Build and Push Docker Image
+          env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          run: |
+            docker build -t weihan1394/simulator:latest .
+            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+            docker push weihan1394/simulator:latest

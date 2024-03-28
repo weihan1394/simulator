@@ -3,8 +3,6 @@ package tehpeng.simulator.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 public class CommonUtil {
   public static boolean isValidInteger(String value) {
