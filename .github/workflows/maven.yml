@@ -78,6 +78,10 @@ jobs:
       needs: [publish-job]
 
       steps:
+
+        - name: Check out the repo
+          uses: actions/checkout@v4
+
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v3
           
@@ -96,5 +100,6 @@ jobs:
         - name: Build and push to dockerhub
           uses: docker/build-push-action@v5
           with:
+            context:
             push: true
             tags: weihan1394/simulator:${{ env.DATE }}
