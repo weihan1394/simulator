@@ -25,11 +25,11 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    
-    steps:
-      - name: Build and test with Maven
-        run: mvn clean test
+      - name: Install dependencies
+        run: mvn package -DskipTests
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
+      - name: Run Formatter
+        run: mvn com.coveo:fmt-maven-plugin:format
+      - name: Test
+        run: mvn test
