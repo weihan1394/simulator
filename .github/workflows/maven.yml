@@ -32,7 +32,10 @@ jobs:
         run: mvn -DskipTests -B package --file pom.xml
 
       - name: Test
-        run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
+        run: |
+          mvn --batch-mode -Dmaven.test.failure.ignore=true test
+          ls -la
+          cd target
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
