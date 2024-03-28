@@ -54,7 +54,7 @@ jobs:
             distribution: 'adopt'
             cache: maven
         - run: mvn -B package --file pom.xml -DskipTests
-        - run: mkdir staging && cp target/*jar-with-dependencies.jar staging
+        - run: mkdir staging && cp target/*.jar staging
 
         - name: upload  build
           uses: actions/upload-artifact@v1
