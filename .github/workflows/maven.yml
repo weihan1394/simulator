@@ -78,14 +78,14 @@ jobs:
 
       steps:
 
-        - name: Check out the repo
-          uses: actions/checkout@v4
+        # - name: Check out the repo
+        #   uses: actions/checkout@v4
 
-        - name: Build docker image
-          run: |
-            ls -la
-            pwd
-            docker build . -t weihan1394/simulator:latest -f Dockerfile
+        # - name: Build docker image
+        #   run: |
+        #     ls -la
+        #     pwd
+        #     docker build . -t weihan1394/simulator:latest -f Dockerfile
 
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v3
@@ -105,7 +105,5 @@ jobs:
         - name: Build and push to dockerhub
           uses: docker/build-push-action@v5
           with:
-            context: .
-            file: ./Dockerfile
             push: true
             tags: weihan1394/simulator:${{ env.DATE }}
