@@ -37,12 +37,14 @@ jobs:
           ls -la
           cd target
 
-      - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+      - name: Report
+        uses: dorny/test-reporter@v1
         if: always()
         with:
-          files: |
-            files: "target/surefire-reports/*.xml"
+          name: Maven Tests
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: true
 
       # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
       - name: Update dependency graph
