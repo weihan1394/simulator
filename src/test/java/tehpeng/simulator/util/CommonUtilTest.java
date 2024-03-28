@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class CommonUtilTest {
   @Test
-  void testIsValidInteger() {
+  public void testIsValidInteger() {
     assertTrue(CommonUtil.isValidInteger("123"));
     assertTrue(CommonUtil.isValidInteger("-456"));
     assertFalse(CommonUtil.isValidInteger("abc"));
