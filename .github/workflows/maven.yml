@@ -81,6 +81,10 @@ jobs:
         - name: Check out the repo
           uses: actions/checkout@v4
 
+        - name: Build docker image
+          run: |
+            docker build . -t weihan1394/simulator:latest -f Dockerfile
+
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v3
           
