@@ -18,7 +18,7 @@ public class CommonUtilTest {
   }
 
   @Test
-  void testIsValidDirection() {
+  public void testIsValidDirection() {
     assertTrue(CommonUtil.isValidDirection("N"));
     assertTrue(CommonUtil.isValidDirection("S"));
     assertTrue(CommonUtil.isValidDirection("E"));
@@ -28,7 +28,7 @@ public class CommonUtilTest {
   }
 
   @Test
-  void testIsValidCharacter() {
+  public void testIsValidCharacter() {
     assertTrue(CommonUtil.isValidCharacter("A"));
     assertTrue(CommonUtil.isValidCharacter("1"));
     assertFalse(CommonUtil.isValidCharacter(""));
@@ -36,13 +36,13 @@ public class CommonUtilTest {
   }
 
   @Test
-  void testIsValidBoundary() {
+  public void testIsValidBoundary() {
     assertTrue(CommonUtil.isValidBoundary(1, 10));
     assertFalse(CommonUtil.isValidBoundary(15, 10));
   }
 
   @Test
-  void testIsValidBoundarySize() {
+  public void testIsValidBoundarySize() {
     assertTrue(CommonUtil.isValidBoundarySize(new String[] { "10", "10" }));
     assertFalse(CommonUtil.isValidBoundarySize(new String[] { "10" })); // need to have x and y
     assertFalse(CommonUtil.isValidBoundarySize(new String[] { "5", "abc" }));
@@ -50,13 +50,13 @@ public class CommonUtilTest {
   }
 
   @Test
-  void testIsValidNotEmptyString() {
+  public void testIsValidNotEmptyString() {
     assertTrue(CommonUtil.isValidNotEmptyString("A"));
     assertFalse(CommonUtil.isValidNotEmptyString(""));
   }
 
   @Test
-  void testIsValidCommand() {
+  public void testIsValidCommand() {
     assertTrue(CommonUtil.isValidCommand("FFRFFFFRRL"));
     assertTrue(CommonUtil.isValidCommand("FFLFFFFFFF"));
     assertFalse(CommonUtil.isValidCommand("123"));
@@ -65,20 +65,20 @@ public class CommonUtilTest {
   }
 
   @Test
-  void testIsValidCarName() {
+  public void testIsValidCarName() {
     assertTrue(CommonUtil.isValidCarName("A"));
     assertTrue(CommonUtil.isValidCarName("Car A"));
     assertFalse(CommonUtil.isValidCarName(""));
   }
 
   @Test
-  void testConvertStringToListChar() {
+  public void testConvertStringToListChar() {
     List<Character> result = CommonUtil.convertStringToListChar("FFRFFFFRRL");
     assertEquals(List.of('F', 'F', 'R', 'F', 'F', 'F', 'F', 'R', 'R', 'L'), result);
   }
 
   @Test
-  void testConvertStringToChar() {
+  public void testConvertStringToChar() {
     Character result = CommonUtil.convertStringToChar("F");
     assertEquals('F', result);
   }
