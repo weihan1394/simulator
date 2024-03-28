@@ -73,11 +73,17 @@ jobs:
             name: Package
             path: staging
         
-        - name: Build and Push Docker Image
-          env:
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          run: |
-            docker build -t weihan1394/simulator:latest .
-            docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-            docker push weihan1394/simulator:latest
+        - name: Set env
+          run: echo "DATE=$(date +%s)" >> $GITHUB_ENV
+        
+        - name: Login to dockerhub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+        - name: Build and push to dockerhub
+          uses: docker/build-push-action@v5
+          with:
+            push: true
+            tags: weihan1394/simulator:${{ env.DATE }}
