@@ -29,6 +29,12 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-          
-      - name: Run tests with Maven
-        run: mvn -B test --file pom.xml
+
+      - name: Download Apache Maven 3.9.6
+        run: |
+          wget https://apache.osuosl.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+          tar xf apache-maven-3.9.6-bin.tar.gz
+          export PATH=$(pwd)/apache-maven-3.9.6/bin:$PATH
+
+      - name: Build with Maven
+        run: mvn -B clean install
