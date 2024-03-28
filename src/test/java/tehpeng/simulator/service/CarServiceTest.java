@@ -12,10 +12,10 @@ import tehpeng.simulator.model.Car;
 
 public class CarServiceTest {
   @Test
-  void hasNextStep_CarNotCompleted_ReturnsTrue() {
+  void givenCarHaveMoreCommands_whenhasNextStep_ReturnTrue() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    lsCarMap.put("car1", new Car("car1", 0, 0, 5, 5, 0, "F"));
+    lsCarMap.put("car1", new Car("A", 0, 0, 0, "FFRFFFFRRL"));
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
@@ -26,11 +26,14 @@ public class CarServiceTest {
   }
 
   @Test
-  void hasNextStep_CarCompleted_ReturnFalse() {
+  void givenCarHaveNoMoreCommands_whenhasNextStep_ReturnFalse() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 0, 0, 5, 5, 0, "F");
+    Car car = new Car("A", 0, 0, 0, "FFRFFFFRRL");
     car.setCompleted();
+    car.setCurrCoordinate(new Integer[] { 5, 4 });
+    car.setCurrCommand(9);
+    car.setCurrDirection(2);
     lsCarMap.put(car.getName(), car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
@@ -42,215 +45,222 @@ public class CarServiceTest {
   }
 
   @Test
-  void validateCollision_MultipleCarsCollideForward_CorrectlyHandled() {
+  void givenTwoCarsCollide_whenvalidateCollision_CorrectlyHandledAndCarCompleted() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 0, 0, 5, 5, 0, "F");
-    Car car2 = new Car("car2", 0, 0, 5, 5, 0, "F");
-    lsCarMap.put("car1", car1);
-    lsCarMap.put("car2", car2);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car carA = new Car("A", 0, 0, 0, "F");
+    Car carB = new Car("B", 0, 0, 0, "F");
+    lsCarMap.put(carA.getName(), carA);
+    lsCarMap.put(carB.getName(), carB);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
+    carService.nextMove(); // Both cars move to the same coordinate
 
     // Assert
-    assertTrue(car1.getCompleted()); // car1 should be marked as completed
-    assertTrue(car2.getCompleted()); // car2 should be marked as completed
-    assertTrue(car1.getCollideWith().contains("car2")); // car1 should have collided with car2
-    assertTrue(car2.getCollideWith().contains("car1")); // car2 should have collided with car1
+    assertTrue(carA.getCompleted()); // car A should be marked as completed
+    assertTrue(carB.getCompleted()); // car B should be marked as completed
+    assertTrue(carA.getCollideWith().contains(carB.getName())); // car A should have collided with car B
+    assertTrue(carB.getCollideWith().contains(carA.getName())); // car B should have collided with car A
   }
 
   @Test
-  void validateCollision_MultipleCarsCollideDirectionR_CorrectlyHandled() {
+  void givenTwoCarsNoCollide_whenvalidateCollision_CorrectlyHandledAndCarNotCompleted() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 0, 0, 5, 5, 0, "R");
-    Car car2 = new Car("car2", 0, 0, 5, 5, 0, "R");
-    lsCarMap.put("car1", car1);
-    lsCarMap.put("car2", car2);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car carA = new Car("A", 1, 1, 0, "FL");
+    Car carB = new Car("B", 2, 2, 1, "FL");
+    lsCarMap.put(carA.getName(), carA);
+    lsCarMap.put(carB.getName(), carB);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
+    carService.nextMove();
 
     // Assert
-    assertTrue(car1.getCompleted()); // car1 should be marked as completed
-    assertTrue(car2.getCompleted()); // car2 should be marked as completed
-    assertTrue(car1.getCollideWith().contains("car2")); // car1 should have collided with car2
-    assertTrue(car2.getCollideWith().contains("car1")); // car2 should have collided with car1
+    assertFalse(carA.getCompleted()); // car A should be marked as not completed
+    assertFalse(carB.getCompleted()); // car B should be marked as not completed
+    assertEquals(carA.getCollideWith().size(), 0); // car A no collision
+    assertEquals(carB.getCollideWith().size(), 0); // car Bno collision
   }
 
   @Test
-  void validateCollision_MultipleCarsCollideDirectionL_CorrectlyHandled() {
+  void givenCarMoveForwardNorth_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 0, 0, 5, 5, 0, "L");
-    Car car2 = new Car("car2", 0, 0, 5, 5, 0, "L");
-    lsCarMap.put("car1", car1);
-    lsCarMap.put("car2", car2);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car car = new Car("A", 1, 2, 0, "FF");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Both cars move to the same coordinate
-
-    // Assert
-    assertTrue(car1.getCompleted()); // car1 should be marked as completed
-    assertTrue(car2.getCompleted()); // car2 should be marked as completed
-    assertTrue(car1.getCollideWith().contains("car2")); // car1 should have collided with car2
-    assertTrue(car2.getCollideWith().contains("car1")); // car2 should have collided with car1
-  }
-
-  @Test
-  void validateCollision_MultipleCarsNoCollision_CorrectlyHandled() {
-    // Given
-    HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car1 = new Car("car1", 1, 1, 5, 5, 0, "FL");
-    Car car2 = new Car("car2", 2, 2, 5, 5, 1, "FL");
-    lsCarMap.put("car1", car1);
-    lsCarMap.put("car2", car2);
-    CarService carService = new CarService(lsCarMap, 5, 5);
-
-    // When
-    carService.nextMove(0); // Both cars move to the same coordinate
-
-    // Assert
-    assertFalse(car1.getCompleted()); // car1 should be marked as completed
-    assertFalse(car2.getCompleted()); // car2 should be marked as completed
-    assertEquals(car1.getCollideWith().size(), 0); // car1 no collision
-    assertEquals(car2.getCollideWith().size(), 0); // car2 no collision
-  }
-
-  @Test
-  void moveCarForward_MoveForwardNorth_CorrectCoordinatesUpdated() {
-    // Given
-    HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 0, "F");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
-
-    // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(3, car.getCurrCoordinate()[0]); // Coordinate y should increase by 1
-    assertEquals(2, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
+    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
+    assertEquals(0, car.getCurrDirection()); // Direction should be same
+    assertEquals(false, car.getCompleted()); // Car should be finish completed
+  }
+
+  @Test
+  void givenCarMoveForwardNorthExceedBoundary_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
+    // Given
+    HashMap<String, Car> lsCarMap = new HashMap<>();
+    Car car = new Car("A", 1, 9, 0, "F");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
+
+    // When
+    carService.nextMove(); // Move car forward
+
+    // Assert
+    assertEquals(9, car.getCurrCoordinate()[0]); // Coordinate y should increase by 1
+    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
+    assertEquals(0, car.getCurrDirection());
     assertEquals(true, car.getCompleted()); // Car should be finish completed
   }
 
   @Test
-  void moveCarForward_MoveForwardSouth_CorrectCoordinatesUpdated() {
+  void givenCarMoveForwardSouth_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 2, "F");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car car = new Car("A", 1, 2, 2, "F");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
+    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
     assertEquals(1, car.getCurrCoordinate()[0]); // Coordinate y should decrease by 1
-    assertEquals(2, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
+    assertEquals(2, car.getCurrDirection()); // Direction should be same
     assertEquals(true, car.getCompleted()); // Car should be finish completed
   }
 
   @Test
-  void moveCarForward_MoveForwardEast_CorrectCoordinatesUpdated() {
+  void givenCarMoveForwardSouthExceedBoundary_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 1, "F");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car car = new Car("A", 1, 0, 2, "FF");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
+
+    // Assert
+    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
+    assertEquals(0, car.getCurrCoordinate()[0]); // Coordinate y should decrease by 1
+    assertEquals(2, car.getCurrDirection()); // Direction should be same
+    assertEquals(false, car.getCompleted()); // Car should be finish completed
+  }
+
+  @Test
+  void givenCarMoveForwardEast_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
+    // Given
+    HashMap<String, Car> lsCarMap = new HashMap<>();
+    Car car = new Car("A", 1, 2, 1, "F");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
+
+    // When
+    carService.nextMove(); // Move car forward
+
+    // Assert
+    assertEquals(2, car.getCurrCoordinate()[1]); // Coordinate x should increase by 1
+    assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
+    assertEquals(1, car.getCurrDirection()); // Direction should be same
+    assertEquals(true, car.getCompleted()); // Car should be finish completed
+  }
+
+  @Test
+  void givenCarMoveForwardEastExceedBoundary_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
+    // Given
+    HashMap<String, Car> lsCarMap = new HashMap<>();
+    Car car = new Car("A", 9, 2, 1, "FF");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
+
+    // When
+    carService.nextMove(); // Move car forward
+
+    // Assert
+    assertEquals(9, car.getCurrCoordinate()[1]); // Coordinate x should increase by 1
+    assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
+    assertEquals(1, car.getCurrDirection()); // Direction should be same
+    assertEquals(false, car.getCompleted()); // Car should be finish completed
+  }
+
+  @Test
+  void givenCarMoveForwardWest_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
+    // Given
+    HashMap<String, Car> lsCarMap = new HashMap<>();
+    Car car = new Car("A", 1, 2, 3, "F");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
+
+    // When
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
-    assertEquals(3, car.getCurrCoordinate()[1]); // Coordinate x should increase by 1
+    assertEquals(0, car.getCurrCoordinate()[1]); // Coordinate x should decrease by 1
+    assertEquals(3, car.getCurrDirection()); // Direction should be same
     assertEquals(true, car.getCompleted()); // Car should be finish completed
-
   }
 
   @Test
-  void moveCarForward_MoveForwardWest_CorrectCoordinatesUpdated() {
+  void givenCarMoveForwardWestExceeedBoundary_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 3, "F");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car car = new Car("A", 0, 2, 3, "FF");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
-    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should decrease by 1
-    assertEquals(true, car.getCompleted()); // Car should be finish completed
+    assertEquals(0, car.getCurrCoordinate()[1]); // Coordinate x should decrease by 1
+    assertEquals(3, car.getCurrDirection()); // Direction should be same
+    assertEquals(false, car.getCompleted()); // Car should be finish completed
   }
 
   @Test
-  void moveCarForward_MoveRight_CorrectCoordinatesUpdated() {
+  void givenCarMoveTurnRight_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 3, "R");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
+    Car car = new Car("A", 1, 2, 3, "R");
+    lsCarMap.put(car.getName(), car);
+    CarService carService = new CarService(lsCarMap, 10, 10);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
-    assertEquals(2, car.getCurrCoordinate()[1]); // Coordinate x should decrease by 1
+    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
     assertEquals(true, car.getCompleted()); // Car should be finish completed
+    assertEquals(0, car.getCurrDirection()); // Direction should change from north (0) to east (1)
   }
 
   @Test
-  void moveCarForward_MoveLeft_CorrectCoordinatesUpdated() {
+  void givenCarMoveTurnLeft_whennextMove_CorrectCoordinateUpdatedAndSameDirection() {
     // Given
     HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 3, "L");
-    lsCarMap.put("car1", car);
+    Car car = new Car("A", 1, 2, 0, "L");
+    lsCarMap.put(car.getName(), car);
     CarService carService = new CarService(lsCarMap, 5, 5);
 
     // When
-    carService.nextMove(0); // Move car forward
+    carService.nextMove(); // Move car forward
 
     // Assert
     assertEquals(2, car.getCurrCoordinate()[0]); // Coordinate y should remain the same
-    assertEquals(2, car.getCurrCoordinate()[1]); // Coordinate x should decrease by 1
-    assertEquals(true, car.getCompleted()); // Car should be finish completed
-  }
-
-  @Test
-  void moveCarDirection_TurnRight_CorrectDirectionUpdated() {
-    // Given
-    HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 0, "R");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
-
-    // When
-    carService.nextMove(0); // Turn car right
-
-    // Assert
-    assertEquals(1, car.getCurrDirection()); // Direction should change from north (0) to east (1)
-  }
-
-  @Test
-  void moveCarDirection_TurnLeft_CorrectDirectionUpdated() {
-    // Given
-    HashMap<String, Car> lsCarMap = new HashMap<>();
-    Car car = new Car("car1", 2, 2, 5, 5, 1, "L");
-    lsCarMap.put("car1", car);
-    CarService carService = new CarService(lsCarMap, 5, 5);
-
-    // When
-    carService.nextMove(0); // Turn car left
-
-    // Assert
-    assertEquals(0, car.getCurrDirection()); // Direction should change from east (1) to north (0)
+    assertEquals(1, car.getCurrCoordinate()[1]); // Coordinate x should remain the same
+    assertEquals(3, car.getCurrDirection()); // Direction should change from east (1) to north (0)
+    assertEquals(true, car.getCompleted()); // Car should be completed
   }
 }

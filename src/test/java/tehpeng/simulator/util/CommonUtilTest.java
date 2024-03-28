@@ -37,54 +37,49 @@ public class CommonUtilTest {
 
   @Test
   void testIsValidBoundary() {
-    assertTrue(CommonUtil.isValidBoundary(5, 10));
+    assertTrue(CommonUtil.isValidBoundary(1, 10));
     assertFalse(CommonUtil.isValidBoundary(15, 10));
   }
 
   @Test
   void testIsValidBoundarySize() {
-    assertTrue(CommonUtil.isValidBoundarySize(new String[] { "5", "10" }));
-    assertFalse(CommonUtil.isValidBoundarySize(new String[] { "5" }));
+    assertTrue(CommonUtil.isValidBoundarySize(new String[] { "10", "10" }));
+    assertFalse(CommonUtil.isValidBoundarySize(new String[] { "10" })); // need to have x and y
     assertFalse(CommonUtil.isValidBoundarySize(new String[] { "5", "abc" }));
+    assertFalse(CommonUtil.isValidBoundarySize(new String[] { "abc", "5" }));
   }
 
   @Test
   void testIsValidNotEmptyString() {
-    assertTrue(CommonUtil.isValidNotEmptyString("Hello"));
+    assertTrue(CommonUtil.isValidNotEmptyString("A"));
     assertFalse(CommonUtil.isValidNotEmptyString(""));
   }
 
   @Test
   void testIsValidCommand() {
-    assertTrue(CommonUtil.isValidCommand("FRL"));
-    assertTrue(CommonUtil.isValidCommand("FFF"));
+    assertTrue(CommonUtil.isValidCommand("FFRFFFFRRL"));
+    assertTrue(CommonUtil.isValidCommand("FFLFFFFFFF"));
     assertFalse(CommonUtil.isValidCommand("123"));
     assertFalse(CommonUtil.isValidCommand("ABC"));
     assertFalse(CommonUtil.isValidCommand(""));
   }
 
   @Test
-  void testIsValidNoEmptySpaceString() {
-    assertTrue(CommonUtil.isValidNoEmptySpaceString("Hello World"));
-    assertFalse(CommonUtil.isValidNoEmptySpaceString("Hello  World"));
-  }
-
-  @Test
   void testIsValidCarName() {
-    assertTrue(CommonUtil.isValidCarName("Car1"));
-    assertTrue(CommonUtil.isValidCarName("Car2"));
+    assertTrue(CommonUtil.isValidCarName("A"));
+    assertTrue(CommonUtil.isValidCarName("Car A"));
     assertFalse(CommonUtil.isValidCarName(""));
   }
 
   @Test
   void testConvertStringToListChar() {
-    List<Character> result = CommonUtil.convertStringToListChar("Hello");
-    assertEquals(List.of('H', 'e', 'l', 'l', 'o'), result);
+    List<Character> result = CommonUtil.convertStringToListChar("FFRFFFFRRL");
+    assertEquals(List.of('F', 'F', 'R', 'F', 'F', 'F', 'F', 'R', 'R', 'L'), result);
   }
 
   @Test
   void testConvertStringToChar() {
-    Character result = CommonUtil.convertStringToChar("A");
-    assertEquals('A', result);
+    Character result = CommonUtil.convertStringToChar("F");
+    assertEquals('F', result);
   }
 }

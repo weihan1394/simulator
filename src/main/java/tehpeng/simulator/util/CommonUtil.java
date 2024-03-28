@@ -77,18 +77,6 @@ public class CommonUtil {
     return false;
   }
 
-  public static boolean isValidNoEmptySpaceString(String value) {
-
-    Pattern pattern = Pattern.compile("\\s{2,}"); // Regular expression to match 2 or more consecutive whitespace
-    Matcher matcher = pattern.matcher(value);
-
-    if (matcher.find()) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
   public static boolean isValidCarName(String value) {
     if (isValidNotEmptyString(value)) {
       return true;

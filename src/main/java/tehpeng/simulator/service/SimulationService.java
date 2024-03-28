@@ -141,22 +141,13 @@ public class SimulationService {
 
   public boolean runSimulation(HashMap<String, Car> lsCarMap, int inputBoundaryX, int inputBoundaryY) {
     runNewScreen();
-    boolean result = false;
 
     if (lsCarMap.size() > 0) {
-      boolean next = true;
-      int currCommand = 0;
-      while (next) {
-        // start simulation
-        CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
-
+      CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
+      // start simulation
+      while (carSimulation.hasNextStep()) {
         // move car
-        carSimulation.nextMove(currCommand);
-        if (!carSimulation.hasNextStep()) {
-          break;
-        }
-
-        currCommand++;
+        carSimulation.nextMove();
       }
     } else {
       // show error before prompt again

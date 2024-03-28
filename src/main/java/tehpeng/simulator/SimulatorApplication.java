@@ -43,7 +43,7 @@ public class SimulatorApplication {
         String inputCommand = simulationService.runInputCommand(scanner, inputCarName);
 
         // Add car to the list
-        Car car = new Car(inputCarName, inputCarPositionSplitX, inputCarPositionSplitY, inputBoundaryX, inputBoundaryY,
+        Car car = new Car(inputCarName, inputCarPositionSplitX, inputCarPositionSplitY,
             MapUtil.convertDirectionToIndex(inputCarPositionSplitDirection), inputCommand);
         lsCarMap.put(car.getName(), car);
       } else if (inputOption.trim().equals("2")) {

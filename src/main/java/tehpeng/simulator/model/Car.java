@@ -23,7 +23,7 @@ public class Car {
   private boolean completed;
 
   // Constructor
-  public Car(String name, int x, int y, int maxX, int maxY, int direction, String command) {
+  public Car(String name, int x, int y, int direction, String command) {
     this.name = name;
     this.coordinate = new Integer[2];
     coordinate[0] = y; // north remaining

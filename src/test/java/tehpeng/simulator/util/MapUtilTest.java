@@ -1,6 +1,5 @@
 package tehpeng.simulator.util;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,11 +29,11 @@ public class MapUtilTest {
 
   @Test
   void testCheckCollision() {
-    Car car1 = new Car("A", 1, 2, 10, 10, 0, "FFRFFFFRRL");
-    Car car2 = new Car("B", 1, 2, 10, 10, 0, "FFRFFFFRRL");
+    Car car1 = new Car("A", 1, 2, 0, "FFRFFFFRRL");
+    Car car2 = new Car("B", 1, 2, 0, "FFRFFFFRRL");
     assertTrue(MapUtil.checkCollision(car1, car2));
 
-    Car car3 = new Car("c", 3, 3, 10, 10, 0, "FFRFFFFRRL");
+    Car car3 = new Car("c", 3, 3, 0, "FFRFFFFRRL");
     assertFalse(MapUtil.checkCollision(car1, car3));
   }
 }
