@@ -32,4 +32,4 @@ jobs:
       - name: Run Formatter
         run: mvn com.coveo:fmt-maven-plugin:format
       - name: Test
-        run: mvn test
+        run: mvn clean test
