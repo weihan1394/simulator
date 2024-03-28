@@ -32,16 +32,16 @@ jobs:
         run: mvn -B package --file pom.xml
 
       - name: Test
-        run: mvn --batch-mode -Dmaven.test.failure.ignore=true test
+        run: mvn -DskipTests --batch-mode -Dmaven.test.failure.ignore=true test
 
-      - name: Report
-        uses: dorny/test-reporter@v1
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          name: Maven Tests
-          path: target/surefire-reports/*.xml
-          reporter: java-junit
-          fail-on-error: true
+          files: |
+            test-results/**/*.xml
+            test-results/**/*.trx
+            test-results/**/*.json
 
   publish-job:
       runs-on: ubuntu-latest
