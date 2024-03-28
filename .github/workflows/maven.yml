@@ -83,6 +83,8 @@ jobs:
 
         - name: Build docker image
           run: |
+            ls -la
+            pwd
             docker build . -t weihan1394/simulator:latest -f Dockerfile
 
         - name: Set up QEMU
