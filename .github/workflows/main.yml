@@ -19,14 +19,7 @@ jobs:
         with:
           java-version: 11
           distribution: 'adopt'
-
-      # - name: Cache Maven packages
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.m2/repository
-      #     key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-
+          cache: maven
       - name: Install dependencies
         run: mvn package -DskipTests
       - name: Build with Maven
@@ -34,4 +27,6 @@ jobs:
       - name: Run Formatter
         run: mvn com.coveo:fmt-maven-plugin:format
       - name: Test
-        run: mvn clean test
+        run: | 
+          ls -la
+          mvn clean test
