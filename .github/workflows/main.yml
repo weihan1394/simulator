@@ -32,3 +32,11 @@ jobs:
         run: | 
           ls -la
           mvn clean test
+      - if: always()
+        name: Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Maven Tests
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: 'false'
