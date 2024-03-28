@@ -37,4 +37,6 @@ jobs:
           export PATH=$(pwd)/apache-maven-3.9.6/bin:$PATH
 
       - name: Build with Maven
-        run: mvn -B clean install
+        run: |
+          mvn --version
+          mvn -B clean install
