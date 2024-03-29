@@ -79,8 +79,8 @@ jobs:
           cd target/dependency
           ls -la
           cd ../../
-          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --nvdApiKey ${{ secrets.NVD_API_KEY }} --scan target/dependency/*.jar --scan target/*.jar --format ALL -l odc.log  --out dependency-check-result/
-          
+          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --nvdApiKey ${{ secrets.NVD_API_KEY }} --scan . --format ALL -l odc.log  --out dependency-check-result/
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
