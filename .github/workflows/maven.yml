@@ -74,7 +74,7 @@ jobs:
           ls -al
           pwd
           echo "${{ secrets.NVD_API_KEY }}"
-          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --scan ./target/*.jar --format ALL -l odc.log --out report.html
+          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --scan ./target/*.jar --format ALL -l odc.log
           # ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --scan ./target/*.jar --scan ./target/dependency/*.jar --nvdApiKey ${{ secrets.NVD_API_KEY }} --format ALL -l odc.log --out report.html
           rm -rf dependency-check*
 
