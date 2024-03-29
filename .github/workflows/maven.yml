@@ -7,49 +7,49 @@ on:
     branches: [ main ]
 
 jobs:
-  # build_and_test:
-  #   name: Build and Test
-  #   runs-on: ubuntu-latest
+  build_and_test:
+    name: Build and Test
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-  #     - name: Set up JDK 11
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: 11
-  #         distribution: 'adopt'
-  #         cache: maven
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          cache: maven
 
-  #     - name: Cache the Maven packages to speed up build
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ~/.m2
-  #         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-  #         restore-keys: ${{ runner.os }}-m2      
+      - name: Cache the Maven packages to speed up build
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2      
       
-  #     - name: Build
-  #       run: mvn -DskipTests -B package --file pom.xml
+      - name: Build
+        run: mvn -DskipTests -B package --file pom.xml
 
-  #     # ignore fail test so that next stage can generate report
-  #     - name: Test
-  #       run: |
-  #         mvn --batch-mode -Dmaven.test.failure.ignore=true test
-  #         ls -la
-  #         cd target
+      # ignore fail test so that next stage can generate report
+      - name: Test
+        run: |
+          mvn --batch-mode -Dmaven.test.failure.ignore=true test
+          ls -la
+          cd target
 
-  #     - name: Publish Test Results
-  #       uses: dorny/test-reporter@v1
-  #       if: always()
-  #       with:
-  #         name: maven-test
-  #         path: target/surefire-reports/*.xml
-  #         reporter: java-junit
-  #         fail-on-error: true
+      - name: Publish Test Results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: maven-test
+          path: target/surefire-reports/*.xml
+          reporter: java-junit
+          fail-on-error: true
 
-  #     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-  #     - name: Update dependency graph
-  #       uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+      # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+      - name: Update dependency graph
+        uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
 
   scan: 
     name: Scan
@@ -72,13 +72,7 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          ls -al
-          pwd
-          echo "${{ secrets.NVD_API_KEY }}"
           mkdir dependency-check-result
-          cd target/dependency
-          ls -la
-          cd ../../
           ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --nvdApiKey ${{ secrets.NVD_API_KEY }} --scan . --format ALL -l odc.log  --out dependency-check-result/
 
       - name: Upload artifact
@@ -87,77 +81,54 @@ jobs:
           name: Dependency Check Result
           path: dependency-check-result/
 
-      # # dependency check 
-      # # https://github.com/dependency-check/Dependency-Check_Action
-      # - name: Build project with Maven
-      #   run: |
-      #     mvn clean install
-      
-      # - name: Dependency Check
-      #   uses: dependency-check/Dependency-Check_Action@main
-      #   with:
-      #     project: 'Simulator'
-      #     path: '.'
-      #     format: 'HTML'
-      #     out: 'reports' # this is the default, no need to specify unless you wish to override it
-      #     args: >
-      #       --failOnCVSS 7
-      #       --enableRetired
 
-      # - name: Upload Test results
-      #   uses: actions/upload-artifact@master
-      #   with:
-      #      name: Dependency Check Report
-      #      path: ${{github.workspace}}/reports
+  publish_job:
+    name: Publish Job
+    runs-on: ubuntu-latest
+    needs: [scan]
 
+    steps:
+      - uses: actions/checkout@v3
 
-  # publish_job:
-  #   name: Publish Job
-  #   runs-on: ubuntu-latest
-  #   needs: [scan]
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          cache: maven
+      - run: mvn -B package --file pom.xml -DskipTests
+      - run: mkdir staging && cp target/*.jar staging
 
-  #   steps:
-  #     - uses: actions/checkout@v3
+      - name: upload build
+        uses: actions/upload-artifact@v1
+        with:
+          name: Package
+          path: staging
 
-  #     - name: Set up JDK 11
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: 11
-  #         distribution: 'adopt'
-  #         cache: maven
-  #     - run: mvn -B package --file pom.xml -DskipTests
-  #     - run: mkdir staging && cp target/*.jar staging
+  # https://github.com/docker/build-push-action
+  dockerize:
+    name: Dockerize
+    runs-on: ubuntu-latest
+    needs: [scan]
 
-  #     - name: upload build
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: Package
-  #         path: staging
-
-  # # https://github.com/docker/build-push-action
-  # dockerize:
-    # name: Dockerize
-    # runs-on: ubuntu-latest
-    # needs: [scan]
-
-    # steps:
-    #   - name: Set up QEMU
-    #     uses: docker/setup-qemu-action@v3
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
         
-    #   - name: Set up Docker Buildx
-    #     uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       
-    #   - name: Set env
-    #     run: echo "DATE=$(date +%s)" >> $GITHUB_ENV
+      - name: Set env
+        run: echo "DATE=$(date +%s)" >> $GITHUB_ENV
 
-    #   - name: Login to dockerhub
-    #     uses: docker/login-action@v3
-    #     with:
-    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    #   - name: Build and push to dockerhub
-    #     uses: docker/build-push-action@v5
-    #     with:
-    #       push: true
-    #       tags: weihan1394/simulator:${{ env.DATE }}, weihan1394/simulator:latest
+      - name: Build and push to dockerhub
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: weihan1394/simulator:${{ env.DATE }}, weihan1394/simulator:latest
