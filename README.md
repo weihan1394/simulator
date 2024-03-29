@@ -10,7 +10,7 @@ Car represent the entity of a car and facilitates the simulation of individual c
 
 
 ## Flow
-```
+```mermaid
 graph TD
   SimulatorAppliication-->SimulationService
   SimulationService-->MapUtil
