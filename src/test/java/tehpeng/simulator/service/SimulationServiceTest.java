@@ -287,7 +287,7 @@ public class SimulationServiceTest {
     // error message after the first attempt
     assertEquals("\n\n\n" + "Please enter initial Position of car Car2 in x y Direction format:\n" +
         "=ERROR================================================================\n" +
-        "Please fill correct format. (x y n). ; y=y-axis; n=direction\n" +
+        "Please fill correct format. (x y n)\n" +
         "x = x-axis    options: (integer)\n" +
         "y = y-axis    options: (integer)\n" +
         "n=direction   options: (N / S / E / W)\n" +

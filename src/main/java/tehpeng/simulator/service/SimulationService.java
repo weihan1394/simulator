@@ -98,7 +98,7 @@ public class SimulationService {
           boolean inputFourSplit1StatusBoundary = CommonUtil
               .isValidBoundary(Integer.parseInt(inputCarPositionSplit[0]), inputBoundaryX);
           boolean inputFourSplit2StatusBoundary = CommonUtil
-              .isValidBoundary(Integer.parseInt(inputCarPositionSplit[1]), inputBoundaryX);
+              .isValidBoundary(Integer.parseInt(inputCarPositionSplit[1]), inputBoundaryY);
 
           if (inputFourSplit1StatusBoundary && inputFourSplit2StatusBoundary) {
             // valid input
@@ -109,7 +109,7 @@ public class SimulationService {
 
       // show error before prompt again
       System.out.println("=ERROR================================================================");
-      System.out.println("Please fill correct format. (x y n). ; y=y-axis; n=direction");
+      System.out.println("Please fill correct format. (x y n)");
       System.out.println("x = x-axis    options: (integer)");
       System.out.println("y = y-axis    options: (integer)");
       System.out.println("n=direction   options: (N / S / E / W)");
