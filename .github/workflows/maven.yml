@@ -58,29 +58,45 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      # dependency check 
-      # https://github.com/dependency-check/Dependency-Check_Action
-      - name: Build project with Maven
+      - name: Download OWASP Dependency Check
         run: |
-          mvn clean install
-      
-      - name: Dependency Check
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: 'Simulator'
-          path: '.'
-          format: 'HTML'
-          out: 'reports' # this is the default, no need to specify unless you wish to override it
-          args: >
-            --failOnCVSS 7
-            --enableRetired
+          VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
+          curl -sL "https://github.com/jeremylong/DependencyCheck/releases/download/v$VERSION/dependency-check-$VERSION-release.zip" --output dependency-check.zip
+          unzip dependency-check.zip
 
-      - name: Upload Test results
-        uses: actions/upload-artifact@master
+      - name: Run Dependency Check
+        run: |
+          ./dependency-check/bin/dependency-check.sh --out report.html --scan .
+          rm -rf dependency-check*
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         with:
-           name: Dependency Check Report
-           path: ${{github.workspace}}/reports
+          name: artifacts
+          path: report.html
+
+      # # dependency check 
+      # # https://github.com/dependency-check/Dependency-Check_Action
+      # - name: Build project with Maven
+      #   run: |
+      #     mvn clean install
+      
+      # - name: Dependency Check
+      #   uses: dependency-check/Dependency-Check_Action@main
+      #   with:
+      #     project: 'Simulator'
+      #     path: '.'
+      #     format: 'HTML'
+      #     out: 'reports' # this is the default, no need to specify unless you wish to override it
+      #     args: >
+      #       --failOnCVSS 7
+      #       --enableRetired
+
+      # - name: Upload Test results
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #      name: Dependency Check Report
+      #      path: ${{github.workspace}}/reports
 
 
   publish_job:
