@@ -28,7 +28,7 @@ Presentation
 Service:
 1. service/CarService.java
 2. service/SimulationService.java
-- Model:
+Model:
 1. model/Car.java
 Util:
 1. util/CommonUtil.java
