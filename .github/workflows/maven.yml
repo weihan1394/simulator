@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: artifacts
-          path: report.html
+          path: ./dependency-check-result/
 
       # # dependency check 
       # # https://github.com/dependency-check/Dependency-Check_Action
