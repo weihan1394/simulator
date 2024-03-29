@@ -35,6 +35,11 @@ Util:
 2. util/MapUtil.java
 
 
+## Environment
+Built: Mac OS
+Support: Mac OS, Linux 
+
+
 ## Requirements
 
 ```
@@ -67,8 +72,8 @@ docker run -it simulator:latest
 # run test
 mvn clean test
 
-# debug docker image
-docker run -it  simulator:latest /bin/sh
+# debug docker built image (maven:3.9.6-eclipse-temurin-11-focal)
+docker run -it  simulator:latest /bin/sh 
 ```
 
 ## Testing Approach
