@@ -12,7 +12,7 @@ public class CarService {
   private HashMap<String, Car> lsCarMap;
   private int inputBoundaryX;
   private int inputBoundaryY;
-  private int currCommandIdx;
+  private int currCommandIndex;
 
   public CarService(HashMap<String, Car> lsCarMap, int inputBoundaryX, int inputBoundaryY) {
     this.lsCarMap = lsCarMap;
@@ -70,9 +70,9 @@ public class CarService {
       if ((car.getCollideWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())
           && (car.getCompleted() == false)) {
         // set current command
-        car.setCurrCommand(this.currCommandIdx);
+        car.setCurrCommand(this.currCommandIndex);
         // car not collided and car still have command
-        char currCommand = car.getCommands().get(this.currCommandIdx);
+        char currCommand = car.getCommands().get(this.currCommandIndex);
         if (currCommand == 'F') {
           moveCarForward(car);
         } else if ((currCommand == 'R') || (currCommand == 'L')) {
@@ -99,7 +99,7 @@ public class CarService {
     }
 
     validateCollision(coordinateMap);
-    currCommandIdx++;
+    currCommandIndex++;
   }
 
   private void moveCarForward(Car car) {
