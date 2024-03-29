@@ -67,6 +67,8 @@ jobs:
 
       - name: Run Dependency Check
         run: |
+          ls -al
+          pwd
           echo "${{ github.event.repository.name }}"
           ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --scan ./target/*.jar --scan ./target/dependency/*.jar --nvdApiKey ${{ secrets.NVD_API_KEY }} --format ALL -l odc.log --scan ./target/  --out report.html
           rm -rf dependency-check*
