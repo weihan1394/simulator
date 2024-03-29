@@ -84,7 +84,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Dependency Check Result
-          path: dependency-check-result
+          path: dependency-check-result/
 
       # # dependency check 
       # # https://github.com/dependency-check/Dependency-Check_Action
