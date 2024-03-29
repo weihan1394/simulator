@@ -8,8 +8,8 @@ CarService manages all car movements, separating them from the simulation logic.
 
 Car represent the entity of a car and facilitates the simulation of individual cars. During simulation, the class tracks the car's current state, including its position, direction, and progress through executing commands.
 
-
 ## Flow
+
 ```mermaid
 graph TD
   SimulatorAppliication-->SimulationService
@@ -20,10 +20,10 @@ graph TD
   CarService-->Car
 ```
 
-
 ## Files
+
 | Layer        | Class                     | Folder    |
-|--------------|---------------------------|-----------|
+| ------------ | ------------------------- | --------- |
 | Presentation | SimulatorApplication.java | .         |
 | Service      | CarService.java           | ./service |
 | Service      | SimulationService.java    | ./service |
@@ -31,24 +31,23 @@ graph TD
 | Util         | CommonUtil.java           | ./util    |
 | Util         | MapUtil.java              | ./util    |
 
-
 ## Environment
-Built: Mac OS
-Support: Mac OS, Linux 
 
+Built: Mac OS
+Support: Mac OS, Linux
 
 ## Requirements
 
 ```
 1. Apache Maven 3.9.6 (bc0240f3c744dd6b6ec2920b3cd08dcc295161ae)
 2. openjdk version "11.0.22" 2024-01-16
-3. Docker version 25.0.3, build 4debf41 (optional, used to run using docker) 
+3. Docker version 25.0.3, build 4debf41 (optional, used to run using docker)
 ```
-
 
 ## Run Project
 
 ```
+### jar
 # build and run project
 sh run.sh
 
@@ -58,19 +57,21 @@ mvn -Dmaven.test.skip=true -Ddependency-check.skip=true  install
 # build project with scan and test
 mvn clean install
 
-# build project with docker
-docker build . -t simulator:latest
-
 # run project using jar
 mvn exec:java -Dexec.mainClass="tehpeng.simulator.SimulatorApplication"
-# run project using docker image
-docker run -it simulator:latest
 
 # run test
 mvn clean test
 
-# debug docker built image (maven:3.9.6-eclipse-temurin-11-focal)
-docker run -it  simulator:latest /bin/sh 
+### docker
+# build project
+docker build . -t simulator:latest
+
+# run project using docker image
+docker run -it simulator:latest
+
+# debug docker built image
+docker run -it  simulator:latest /bin/sh
 ```
 
 ## Testing Approach
