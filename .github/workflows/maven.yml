@@ -76,7 +76,10 @@ jobs:
           pwd
           echo "${{ secrets.NVD_API_KEY }}"
           mkdir dependency-check-result
-          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --nvdApiKey ${{ secrets.NVD_API_KEY }} --scan ./target/*.jar --format ALL -l odc.log  --out dependency-check-result/
+          cd target/dependency
+          ls -la
+          cd ../../
+          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --nvdApiKey ${{ secrets.NVD_API_KEY }} --scan ./target/dependency/*.jar --scan ./target/*.jar --format ALL -l odc.log  --out dependency-check-result/
           # ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }}" --scan ./target/*.jar --scan ./target/dependency/*.jar --nvdApiKey ${{ secrets.NVD_API_KEY }} --format ALL -l odc.log --out report.html
 
       - name: Upload artifact
