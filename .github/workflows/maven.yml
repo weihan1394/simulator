@@ -58,6 +58,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Download OWASP Dependency Check
         run: |
           VERSION=$(curl -s https://jeremylong.github.io/DependencyCheck/current.txt)
@@ -66,7 +67,7 @@ jobs:
 
       - name: Run Dependency Check
         run: |
-          ./dependency-check/bin/dependency-check.sh --out report.html --scan .
+          ./dependency-check/bin/dependency-check.sh --project "${{ github.event.repository.name }" --scan ./target/*.jar --scan ./target/dependency/*.jar --nvdApiKey ${{ secrets.NVD_API_KEY }} --format ALL -l odc.log --scan ./target/  --out report.html
           rm -rf dependency-check*
 
       - name: Upload Artifacts
