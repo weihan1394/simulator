@@ -22,20 +22,14 @@ graph TD
 
 
 ## Files
-
-Presentation
-1. SimulatorApplication.java
-
-Service:
-1. service/CarService.java
-2. service/SimulationService.java
-
-Model:
-1. model/Car.java
-
-Util:
-1. util/CommonUtil.java
-2. util/MapUtil.java
+| Layer        | Class                     | Folder    |
+|--------------|---------------------------|-----------|
+| Presentation | SimulatorApplication.java | .         |
+| Service      | CarService.java           | ./service |
+| Service      | SimulationService.java    | ./service |
+| Model        | Car.java                  | ./model   |
+| Util         | CommonUtil.java           | ./util    |
+| Util         | MapUtil.java              | ./util    |
 
 
 ## Environment
