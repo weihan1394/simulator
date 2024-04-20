@@ -143,11 +143,11 @@ public class SimulationService {
     runNewScreen();
 
     if (lsCarMap.size() > 0) {
-      CarService carSimulation = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
+      CarService carService = new CarService(lsCarMap, inputBoundaryX, inputBoundaryY);
       // start simulation
-      while (carSimulation.hasNextStep()) {
+      while (carService.hasNextStep()) {
         // move car
-        carSimulation.nextMove();
+        carService.nextMove();
       }
     } else {
       // show error before prompt again

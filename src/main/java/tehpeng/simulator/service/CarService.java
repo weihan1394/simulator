@@ -109,9 +109,9 @@ public class CarService {
     if (currDirection > 1) {
       // moving south or west (-1)
       if (currDirectionIndex == 0) {
-        car.minusCurrCoordinateY();
+        car.minusCurrCoordinateY(inputBoundaryY);
       } else {
-        car.minusCurrCoordinateX();
+        car.minusCurrCoordinateX(inputBoundaryX);
       }
     } else {
       // moving north or east (+1)
