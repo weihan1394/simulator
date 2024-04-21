@@ -149,11 +149,15 @@ public class SimulationServiceTest {
     PrintStream originalOut = System.out;
     System.setOut(new PrintStream(outputStream)); // Redirect System.out to capture output
 
+    HashMap<String, Car> lsCar = new HashMap<>();
+    Car car = new Car("B", 0, 0, 0, "FF");
+    lsCar.put("B", car);
+
     Scanner scanner = new Scanner(System.in);
 
     // When
     SimulationService simulationService = new SimulationService();
-    String result = simulationService.runInputCarName(scanner);
+    String result = simulationService.runInputCarName(scanner, lsCar);
 
     // Assert
     assertEquals("A", result); // Expecting "A" as the user input
@@ -168,6 +172,7 @@ public class SimulationServiceTest {
     String input = " \nA"; // Simulate user input empty car name
     InputStream inputStream = new ByteArrayInputStream(input.getBytes());
     System.setIn(inputStream); // Redirect System.in to provide input
+    HashMap lsCar = new HashMap<>();
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     System.setOut(new PrintStream(outputStream)); // Redirect System.out to capture output
@@ -176,7 +181,7 @@ public class SimulationServiceTest {
 
     // When
     SimulationService simulationService = new SimulationService();
-    String result = simulationService.runInputCarName(scanner);
+    String result = simulationService.runInputCarName(scanner, lsCar);
 
     // Assert
     assertEquals("A", result); // Expecting "A" as the user input

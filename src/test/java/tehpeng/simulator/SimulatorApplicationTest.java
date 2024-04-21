@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import tehpeng.simulator.service.SimulationService;
 
 public class SimulatorApplicationTest {
-
   @Test
   void givenScenario1Mock_whenRunSimulation_thenReturnCarAResult() {
     // Given
@@ -26,7 +25,7 @@ public class SimulatorApplicationTest {
     when(simulationService.runInputBoundary(Mockito.any())).thenReturn(new String[] { "10", "10" });
     when(simulationService.runInputOption(Mockito.any(),
         Mockito.any())).thenReturn("1");
-    when(simulationService.runInputCarName(Mockito.any())).thenReturn("A");
+    when(simulationService.runInputCarName(Mockito.any(), Mockito.any())).thenReturn("A");
     when(simulationService.runInputCarPosition(Mockito.any(), Mockito.anyInt(),
         Mockito.anyInt(), Mockito.any()))
         .thenReturn(new String[] { "1", "2", "N" });
@@ -253,7 +252,6 @@ public class SimulatorApplicationTest {
     assertEquals(expectedOutput, outputStream.toString());
   }
 
-  // TODO: add test case A B collide then C collide after that
   @Test
   void givenScenario3_whenRunSimulation_thenReturnCarAandBCollideAtStep7AndCarCCollideWithCarAANDBAtStep10() {
     // Given
@@ -398,7 +396,7 @@ public class SimulatorApplicationTest {
         "After simulation, the result is:\n" +
         "- A, collides with B at (5,4) at step 7\n" +
         "- B, collides with A at (5,4) at step 7\n" +
-        "- C, (0,9) N\n" +
+        "- C, (0,1) N\n" +
         "\n\n\n" +
         "Please choose from the following options:\n" +
         "[1] Start Over\n" +
@@ -408,5 +406,50 @@ public class SimulatorApplicationTest {
     assertEquals(expectedOutput, outputStream.toString());
   }
 
-  // TODO: add test case A B collide then C continue to completion after that
+  @Test
+  void givenScenario4_whenRunSimulation_thenReturnCarAResult() {
+    // Given
+    String input = "10 10\n1\nA\n5 9 N\nFF\n2\n2\n";
+    InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+    System.setIn(inputStream);
+
+    // Redirect output streams
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outputStream));
+
+    // When
+    SimulatorApplication.main(new String[0]);
+
+    // Assert
+    String expectedOutput = "Please enter the width and height of the simulation field in x y format\n" +
+        "\n\n\n" +
+        "Please choose from the following options:\n" +
+        "[1] Add a car to the field\n" +
+        "[2] Run simulation\n" +
+        "\n\n\n" +
+        "Please enter the name of the car:\n" +
+        "\n\n\n" +
+        "Please enter initial Position of car A in x y Direction format:\n" +
+        "\n\n\n" +
+        "Please enter the commands for car A:\n" +
+        "\n\n\n" +
+        "Your current list of cars are:\n" +
+        "- A, (5,9) N, [F, F]\n" +
+        "Please choose from the following options:\n" +
+        "[1] Add a car to the field\n" +
+        "[2] Run simulation\n" +
+        "\n\n\n" +
+        "Your current list of cars are:\n" +
+        "- A, (5,9) N, [F, F]\n" +
+        "After simulation, the result is:\n" +
+        "- A, (5,1) N\n" +
+        "\n\n\n" +
+        "Please choose from the following options:\n" +
+        "[1] Start Over\n" +
+        "[2] Exit\n" +
+        "\n\n\n" +
+        "Thank you for running the simulation. Goodbye!\n";
+    assertEquals(expectedOutput, outputStream.toString());
+  }
+
 }

@@ -26,15 +26,33 @@ public class CarTest {
 
   @Test
   void testMovement() {
-    Car car = new Car("TestCar", 1, 2, 0, "FRL");
+    Car car = new Car("TestCar", 1, 2, 0, "F");
     car.plusCurrCoordinateY(5); // maxY is 5
     assertEquals(3, car.getCurrCoordinate()[0]);
-    car.minusCurrCoordinateY();
+    car.minusCurrCoordinateY(5);
     assertEquals(2, car.getCurrCoordinate()[0]);
     car.plusCurrCoordinateX(5); // maxX is 5
     assertEquals(2, car.getCurrCoordinate()[1]);
-    car.minusCurrCoordinateX();
+    car.minusCurrCoordinateX(5);
     assertEquals(1, car.getCurrCoordinate()[1]);
+  }
+
+  @Test
+  void testMovementMoveAndExceedBoundaryNorthandEast() {
+    Car car = new Car("TestCar", 5, 5, 0, "F");
+    car.plusCurrCoordinateY(5); // maxY is 5
+    assertEquals(0, car.getCurrCoordinate()[0]);
+    car.plusCurrCoordinateX(5); // maxX is 5
+    assertEquals(0, car.getCurrCoordinate()[1]);
+  }
+
+  @Test
+  void testMovementMoveAndExceedBoundarySouthandWest() {
+    Car car = new Car("TestCar", 0, 0, 0, "F");
+    car.minusCurrCoordinateY(5); // maxY is 5
+    assertEquals(4, car.getCurrCoordinate()[0]);
+    car.minusCurrCoordinateX(5); // maxX is 5
+    assertEquals(4, car.getCurrCoordinate()[1]);
   }
 
   @Test

@@ -4,9 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import tehpeng.simulator.model.Car;
 
 public class CommonUtilTest {
   @Test
@@ -66,9 +69,22 @@ public class CommonUtilTest {
 
   @Test
   public void testIsValidCarName() {
-    assertTrue(CommonUtil.isValidCarName("A"));
-    assertTrue(CommonUtil.isValidCarName("Car A"));
-    assertFalse(CommonUtil.isValidCarName(""));
+    HashMap<String, Car> lsCar = new HashMap<>();
+    Car car = new Car("A", 0, 0, 0, "FF");
+    lsCar.put("A", car);
+
+    assertTrue(CommonUtil.isValidCarName("B", lsCar));
+    assertTrue(CommonUtil.isValidCarName("Car A", lsCar));
+    assertFalse(CommonUtil.isValidCarName("", lsCar));
+  }
+
+  @Test
+  public void testIsValidCarNameDuplicated() {
+    HashMap<String, Car> lsCar = new HashMap<>();
+    Car car = new Car("A", 0, 0, 0, "FF");
+    lsCar.put("A", car);
+
+    assertFalse(CommonUtil.isValidCarName("A", lsCar));
   }
 
   @Test

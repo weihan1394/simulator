@@ -30,7 +30,7 @@ public class SimulatorApplication {
 
       if (inputOption.trim().equals("1")) {
         // Step 3: Request for car
-        String inputCarName = simulationService.runInputCarName(scanner);
+        String inputCarName = simulationService.runInputCarName(scanner, lsCarMap);
 
         // Step 4: Request for car current position
         String[] inputCarPositionSplit = simulationService.runInputCarPosition(scanner, inputBoundaryX, inputBoundaryY,

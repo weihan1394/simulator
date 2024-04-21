@@ -59,14 +59,14 @@ public class SimulationService {
     return inputOption;
   }
 
-  public String runInputCarName(Scanner scanner) {
+  public String runInputCarName(Scanner scanner, HashMap<String, Car> lsCar) {
     runNewScreen();
     String inputCarName = "";
     while (true) {
       // add car
       System.out.println("Please enter the name of the car:");
       inputCarName = scanner.nextLine();
-      if (CommonUtil.isValidCarName(inputCarName)) {
+      if (CommonUtil.isValidCarName(inputCarName, lsCar)) {
         break;
       }
 

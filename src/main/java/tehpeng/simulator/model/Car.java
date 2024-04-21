@@ -100,6 +100,8 @@ public class Car {
     int currY = this.currCoordinate[0];
     if (currY < (maxY - 1)) {
       this.currCoordinate[0] = currY + 1;
+    } else {
+      this.currCoordinate[0] = 0;
     }
   }
 
@@ -107,20 +109,26 @@ public class Car {
     int currX = this.currCoordinate[1];
     if (currX < (maxX - 1)) {
       this.currCoordinate[1] = currX + 1;
+    } else {
+      this.currCoordinate[1] = 0;
     }
   }
 
-  public void minusCurrCoordinateY() {
+  public void minusCurrCoordinateY(int maxY) {
     int currY = this.currCoordinate[0];
     if (currY > 0) {
       this.currCoordinate[0] = currY - 1;
+    } else {
+      this.currCoordinate[0] = maxY - 1;
     }
   }
 
-  public void minusCurrCoordinateX() {
+  public void minusCurrCoordinateX(int maxX) {
     int currX = this.currCoordinate[1];
     if (currX > 0) {
       this.currCoordinate[1] = currX - 1;
+    } else {
+      this.currCoordinate[1] = maxX - 1;
     }
   }
 

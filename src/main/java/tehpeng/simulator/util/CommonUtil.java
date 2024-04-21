@@ -2,7 +2,12 @@ package tehpeng.simulator.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
+import org.bouncycastle.jcajce.provider.digest.GOST3411.HashMac;
+
+import tehpeng.simulator.model.Car;
 
 public class CommonUtil {
   public static boolean isValidInteger(String value) {
@@ -75,8 +80,8 @@ public class CommonUtil {
     return false;
   }
 
-  public static boolean isValidCarName(String value) {
-    if (isValidNotEmptyString(value)) {
+  public static boolean isValidCarName(String value, HashMap<String, Car> lsCar) {
+    if ((isValidNotEmptyString(value)) && (!lsCar.containsKey(value))) {
       return true;
     }
 

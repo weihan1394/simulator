@@ -1,0 +1,22 @@
+### Exceed boundary
+# scenario 1
+car move forward at y = boundaryY
+
+# scenario 2 
+car move forward at x = boundaryX
+
+# scenario 3
+car move forward at y = 0
+
+# scenario 4
+car move forward at x = 0
+
+# facing direction
+north east south west
+0 1 2 3
+
+# boundary
+x = 10
+y = 10
+
+# scenario 2 check if the name is not duplicated

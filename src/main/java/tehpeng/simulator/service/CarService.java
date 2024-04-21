@@ -7,7 +7,7 @@ import java.util.List;
 
 import tehpeng.simulator.model.Car;
 
-public class CarService {
+public class CarService implements CarServiceInterface {
 
   private HashMap<String, Car> lsCarMap;
   private int inputBoundaryX;
@@ -67,8 +67,7 @@ public class CarService {
     for (String key : lsCarMap.keySet()) {
       Car car = lsCarMap.get(key);
       // car not collided, car still have command, car not yet completed
-      if ((car.getCollideWith().size() == 0) && (car.getCurrCommand() < car.getCommands().size())
-          && (car.getCompleted() == false)) {
+      if (!car.getCompleted()) {
         // set current command
         car.setCurrCommand(this.currCommandIndex);
         // car not collided and car still have command
@@ -109,9 +108,9 @@ public class CarService {
     if (currDirection > 1) {
       // moving south or west (-1)
       if (currDirectionIndex == 0) {
-        car.minusCurrCoordinateY();
+        car.minusCurrCoordinateY(inputBoundaryY);
       } else {
-        car.minusCurrCoordinateX();
+        car.minusCurrCoordinateX(inputBoundaryX);
       }
     } else {
       // moving north or east (+1)
